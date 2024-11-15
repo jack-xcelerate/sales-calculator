@@ -2,20 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html, 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(23, 32, 63); /* Exact navy blue */
+}
+/* PDF Export Styles */
+.pdf-export {
+  background-color: rgb(23, 32, 63) !important;
+}
+
+.pdf-export input[type="range"] {
+  -webkit-appearance: none;
+  height: 4px;
+  background: rgba(249, 115, 22, 0.5);
+  border-radius: 2px;
+  margin: 1rem 0;
+}
+
+.pdf-export input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: rgb(249, 115, 22);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.pdf-export * {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.pdf-export [role="tooltip"] {
+  display: none !important;
+}
+
+.pdf-export .bg-blue-950\/30 {
+  background-color: rgba(30, 41, 59, 0.3) !important;
+}
+
+.pdf-export .text-white {
+  color: white !important;
+}
+
+.pdf-export .text-orange-500 {
+  color: rgb(249, 115, 22) !important;
+}
+
+.pdf-export .text-white\/60,
+.pdf-export .text-white\/70 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Ensure proper sizing in PDF */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  .pdf-export {
+    width: 210mm;
+    height: 297mm;
+    padding: 20mm;
+  }
 }
