@@ -12,13 +12,14 @@ const TooltipContent = React.forwardRef
     ref={ref}
     sideOffset={sideOffset}
     className={cn(
-      "z-50 overflow-hidden rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-950 shadow-md animate-in fade-in-0 zoom-in-95 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50",
+      "z-50 overflow-hidden rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white shadow-md animate-in fade-in-0 zoom-in-95",
       className
     )}
     {...props}
   />
 ))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+
+TooltipContent.displayName = "TooltipContent"
 
 export function Tooltip({ content, children }: { content: string; children: React.ReactNode }) {
   return (
