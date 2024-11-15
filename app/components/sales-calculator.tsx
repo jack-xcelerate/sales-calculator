@@ -185,7 +185,13 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const newClients = proposalsSent * (inputs.clientWonRate / 100);
     const estimatedRevenue = newClients * inputs.avgLifetimeValue;
     const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
-
+  
+    // Corrected reverse calculations
+    const estProposals = Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100));
+    const estSalesCalls = Math.ceil(estProposals / (inputs.proposalRate / 100));
+    const estDiscoveryCalls = Math.ceil(estSalesCalls / (inputs.salesCallRate / 100));
+    const estLeads = Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100));
+  
     setMetrics({
       clicks,
       leads,
@@ -195,10 +201,10 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       newClients,
       estimatedRevenue,
       roas,
-      estProposals: Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100)),
-      estSalesCalls: Math.ceil((inputs.targetNewClients / inputs.clientWonRate) * inputs.proposalRate),
-      estDiscoveryCalls: Math.ceil((inputs.targetNewClients / inputs.clientWonRate) * inputs.salesCallRate),
-      estLeads: Math.ceil((inputs.targetNewClients / inputs.clientWonRate) * inputs.discoveryCallRate),
+      estProposals,
+      estSalesCalls,
+      estDiscoveryCalls,
+      estLeads,
       estRevenue: inputs.targetNewClients * inputs.avgLifetimeValue,
     });
   };
