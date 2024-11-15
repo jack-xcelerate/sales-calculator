@@ -4,8 +4,72 @@ import React, { useState, useEffect } from 'react';
 import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
 
+// Interfaces
+interface MetricCardProps {
+  label: string;
+  value: string | number;
+  subtitle?: string;
+  tooltipContent: string;
+}
+
+interface InputFieldProps {
+  label: string;
+  value: number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  min?: number;
+  max?: number;
+  type?: string;
+  prefix?: string;
+  suffix?: string;
+  tooltipContent?: string;
+}
+
+interface FunnelStageProps {
+  value: number;
+  exactValue?: number;
+  label: string;
+  tooltipContent: string;
+}
+
+interface SectionHeaderProps {
+  title: string;
+}
+
+interface Metrics {
+  clicks: number;
+  leads: number;
+  discoveryCalls: number;
+  salesCalls: number;
+  proposalsSent: number;
+  newClients: number;
+  estimatedRevenue: number;
+  roas: number;
+  estProposals: number;
+  estSalesCalls: number;
+  estDiscoveryCalls: number;
+  estLeads: number;
+  estRevenue: number;
+}
+
+interface Inputs {
+  avgLifetimeValue: number;
+  monthlyMarketingBudget: number;
+  costPerClick: number;
+  landingPageConversion: number;
+  discoveryCallRate: number;
+  salesCallRate: number;
+  proposalRate: number;
+  clientWonRate: number;
+  targetNewClients: number;
+  clientSpend: number;
+}
+
+interface SalesCalculatorProps {
+  inputs: Inputs;
+}
+
 // MetricCard component
-const MetricCard = ({ label, value, subtitle, tooltipContent }) => (
+const MetricCard: React.FC<MetricCardProps> = ({ label, value, subtitle, tooltipContent }) => (
   <div className="p-6 rounded-lg border border-orange-600/50 hover:border-orange-600 transition-colors bg-blue-950/30">
     <div className="flex items-center space-x-2 mb-4">
       <span className="text-orange-500 text-sm font-medium">{label}</span>
@@ -19,7 +83,16 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }) => (
 );
 
 // InputField component
-const InputField = ({ label, value, onChange, min = 0, max = 100, type = 'number', prefix, suffix }) => (
+const InputField: React.FC<InputFieldProps> = ({ 
+  label, 
+  value, 
+  onChange, 
+  min = 0, 
+  max = 100, 
+  type = 'number', 
+  prefix, 
+  suffix 
+}) => (
   <div className="mb-8">
     <label className="text-white/90 text-sm mb-2 block">{label}</label>
     <div className="relative">
@@ -58,7 +131,7 @@ const InputField = ({ label, value, onChange, min = 0, max = 100, type = 'number
 );
 
 // FunnelStage component
-const FunnelStage = ({ value, exactValue, label, tooltipContent }) => (
+const FunnelStage: React.FC<FunnelStageProps> = ({ value, exactValue, label, tooltipContent }) => (
   <div className="flex flex-col items-center text-center w-24 px-2">
     <Tooltip content={tooltipContent}>
       <div className="w-20 h-20 rounded-full border border-orange-600/50 hover:border-orange-600 flex flex-col items-center justify-center bg-blue-950/30">
@@ -73,15 +146,16 @@ const FunnelStage = ({ value, exactValue, label, tooltipContent }) => (
 );
 
 // SectionHeader component
-const SectionHeader = ({ title }) => (
+const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => (
   <div className="mb-12 mt-16 first:mt-0">
     <h2 className="text-2xl font-semibold text-white mb-4">{title}</h2>
     <div className="h-px bg-white/10" />
   </div>
 );
-const SalesCalculator = ({ inputs: initialInputs }) => {
-  const [inputs, setInputs] = useState(initialInputs);
-  const [metrics, setMetrics] = useState({
+
+const SalesCalculator: React.FC<SalesCalculatorProps> = ({ inputs: initialInputs }) => {
+  const [inputs, setInputs] = useState<Inputs>(initialInputs);
+  const [metrics, setMetrics] = useState<Metrics>({
     clicks: 0,
     leads: 0,
     discoveryCalls: 0,
@@ -134,7 +208,12 @@ const SalesCalculator = ({ inputs: initialInputs }) => {
     });
   };
 
-  const inputFields = [
+  const inputFields: Array<{
+    label: string;
+    key: keyof Inputs;
+    prefix?: string;
+    suffix?: string;
+  }> = [
     { label: "Average Lifetime Value", key: "avgLifetimeValue", prefix: "$" },
     { label: "Monthly Marketing Budget", key: "monthlyMarketingBudget", prefix: "$" },
     { label: "Cost Per Click", key: "costPerClick", prefix: "$" },
@@ -144,6 +223,7 @@ const SalesCalculator = ({ inputs: initialInputs }) => {
     { label: "Proposal Rate", key: "proposalRate", suffix: "%" },
     { label: "Client Won Rate", key: "clientWonRate", suffix: "%" },
   ];
+
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto space-y-12">
@@ -243,8 +323,10 @@ const SalesCalculator = ({ inputs: initialInputs }) => {
   );
 };
 
-// Initial state and App component
-const initialInputState = {
+// ... (previous code remains the same until initialInputState)
+
+// Complete the initialInputState
+const initialInputState: Inputs = {
   avgLifetimeValue: 4500,
   monthlyMarketingBudget: 2000,
   costPerClick: 2,
@@ -254,12 +336,12 @@ const initialInputState = {
   proposalRate: 60,
   clientWonRate: 60,
   targetNewClients: 10,
-  clientSpend: 500,
+  clientSpend: 500
 };
 
 // App component
 const App = () => {
-  const [scenarios, setScenarios] = useState([initialInputState]);
+  const [scenarios, setScenarios] = useState<Inputs[]>([initialInputState]);
 
   const addScenario = () => setScenarios([...scenarios, { ...initialInputState }]);
 
