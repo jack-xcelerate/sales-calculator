@@ -332,27 +332,47 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
           </div>
 
           {/* Budget Planner Section */}
-          <div className="space-y-8">
-            <SectionHeader title="Budget Planner" />
-            <div className="max-w-lg mb-8">
-              <InputField
-                label="Client Acquisition Cost"
-                value={inputs.clientSpend}
-                onChange={(e) => setInputs(prev => ({
-                  ...prev,
-                  clientSpend: Number(e.target.value)
-                }))}
-                prefix="$"
-                tooltipContent="Max budget per client"
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <MetricCard label="Expected Daily Leads" value={Math.ceil(metrics.leads / 30)} subtitle="Avg leads per day" tooltipContent="Daily leads needed" />
-              <MetricCard label="Cost Per Lead Target" value={`$${(inputs.clientSpend / Math.ceil(metrics.leads)).toFixed(2)}`} subtitle="Target cost per lead" tooltipContent="Cost per lead" />
-              <MetricCard label="Daily Spend" value={`$${((inputs.clientSpend / Math.ceil(metrics.leads)) * Math.ceil(metrics.leads / 30)).toFixed(2)}`} subtitle="Budget per day" tooltipContent="Daily budget" />
-              <MetricCard label="Monthly Spend" value={`$${(inputs.clientSpend * Math.ceil(metrics.leads / 30)).toFixed(2)}`} subtitle="Budget per month" tooltipContent="Monthly budget" />
-            </div>
-          </div>
+<div className="space-y-8">
+  <SectionHeader title="Budget Planner" />
+  <div className="max-w-lg mb-8">
+    <InputField
+      label="Client Acquisition Cost"
+      value={inputs.clientSpend}
+      onChange={(e) => setInputs(prev => ({
+        ...prev,
+        clientSpend: Number(e.target.value)
+      }))}
+      prefix="$"
+      tooltipContent="Max budget per client"
+    />
+  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <MetricCard 
+      label="Expected Daily Leads" 
+      value={Math.ceil(metrics.estLeads / 30)} 
+      subtitle="Avg leads per day" 
+      tooltipContent="Daily leads needed" 
+    />
+    <MetricCard 
+      label="Cost Per Lead Target" 
+      value={`$${(inputs.clientSpend / metrics.estLeads).toFixed(2)}`} 
+      subtitle="Target cost per lead" 
+      tooltipContent="Cost per lead" 
+    />
+    <MetricCard 
+      label="Daily Spend" 
+      value={`$${((inputs.clientSpend / metrics.estLeads) * Math.ceil(metrics.estLeads / 30)).toFixed(2)}`} 
+      subtitle="Budget per day" 
+      tooltipContent="Daily budget" 
+    />
+    <MetricCard 
+      label="Monthly Spend" 
+      value={`$${(inputs.clientSpend * Math.ceil(metrics.estLeads / 30)).toFixed(2)}`} 
+      subtitle="Budget per month" 
+      tooltipContent="Monthly budget" 
+    />
+  </div>
+</div>
         </div>
       </div>
     </div>
