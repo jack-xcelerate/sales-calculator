@@ -1,18 +1,37 @@
-import * as React from 'react';
+import * as React from "react"
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import { cn } from "@/lib/utils"
 
-interface TooltipProps {
-  content: string;
-  children: React.ReactNode;
-}
+const TooltipProvider = TooltipPrimitive.Provider
+const TooltipRoot = TooltipPrimitive.Root
+const TooltipTrigger = TooltipPrimitive.Trigger
+const TooltipContent = React.forwardRef
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+  <TooltipPrimitive.Content
+    ref={ref}
+    sideOffset={sideOffset}
+    className={cn(
+      "z-50 overflow-hidden rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-950 shadow-md animate-in fade-in-0 zoom-in-95 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50",
+      className
+    )}
+    {...props}
+  />
+))
+TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-export function Tooltip({ content, children }: TooltipProps) {
+export function Tooltip({ content, children }: { content: string; children: React.ReactNode }) {
   return (
-    <div className="group relative inline-block">
-      {children}
-      <div className="absolute hidden group-hover:block bottom-full left-1/2 transform -translate-x-1/2 translate-y-0 px-2 py-1 bg-gray-900 text-white text-sm rounded">
-        {content}
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 -translate-y-full border-4 border-transparent border-t-gray-900" />
-      </div>
-    </div>
-  );
+    <TooltipProvider>
+      <TooltipRoot>
+        <TooltipTrigger asChild>
+          {children}
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{content}</p>
+        </TooltipContent>
+      </TooltipRoot>
+    </TooltipProvider>
+  )
 }
