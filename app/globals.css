@@ -81,13 +81,3 @@ input:focus {
 .funnel-stage-circle:hover {
   @apply shadow-lg shadow-orange-500/10;
 }
-
-/* PDF Export Styles */
-.pdf-export {
-  background-color: rgb(23, 32, 63) !important;
-}
-
-.pdf-export * {
-  -webkit-print-color-adjust: exact !important;
-  print-color-adjust: exact !important;
-}
