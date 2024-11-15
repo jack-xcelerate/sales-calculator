@@ -25,6 +25,7 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }: {
 );
 
 // InputField component
+// InputField component
 const InputField = ({ 
   label, 
   value, 
@@ -33,7 +34,8 @@ const InputField = ({
   max = 100, 
   type = 'number', 
   prefix, 
-  suffix 
+  suffix,
+  tooltipContent 
 }: {
   label: string;
   value: number;
@@ -46,7 +48,14 @@ const InputField = ({
   tooltipContent?: string;
 }) => (
   <div className="mb-8">
-    <label className="text-white/90 text-sm font-medium mb-2 block">{label}</label>
+    <div className="flex items-center space-x-2 mb-2">
+      <label className="text-white/90 text-sm font-medium block">{label}</label>
+      {tooltipContent && (
+        <Tooltip content={tooltipContent}>
+          <Info className="h-4 w-4 text-orange-500/50 cursor-help hover:text-orange-500 transition-colors" />
+        </Tooltip>
+      )}
+    </div>
     <div className="relative">
       <input
         type={type}
@@ -195,14 +204,54 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
   };
 
   const inputFields = [
-    { label: "Average Lifetime Value", key: "avgLifetimeValue" as keyof Inputs, prefix: "$" },
-    { label: "Monthly Marketing Budget", key: "monthlyMarketingBudget" as keyof Inputs, prefix: "$" },
-    { label: "Cost Per Click", key: "costPerClick" as keyof Inputs, prefix: "$" },
-    { label: "Landing Page Conversion Rate", key: "landingPageConversion" as keyof Inputs, suffix: "%" },
-    { label: "Discovery Call Rate", key: "discoveryCallRate" as keyof Inputs, suffix: "%" },
-    { label: "Sales Call Rate", key: "salesCallRate" as keyof Inputs, suffix: "%" },
-    { label: "Proposal Rate", key: "proposalRate" as keyof Inputs, suffix: "%" },
-    { label: "Client Won Rate", key: "clientWonRate" as keyof Inputs, suffix: "%" },
+    { 
+      label: "Average Lifetime Value", 
+      key: "avgLifetimeValue" as keyof Inputs, 
+      prefix: "$",
+      tooltipContent: "Average revenue generated per client over their lifetime" 
+    },
+    { 
+      label: "Monthly Marketing Budget", 
+      key: "monthlyMarketingBudget" as keyof Inputs, 
+      prefix: "$",
+      tooltipContent: "Your total monthly ad spend" 
+    },
+    { 
+      label: "Cost Per Click", 
+      key: "costPerClick" as keyof Inputs, 
+      prefix: "$",
+      tooltipContent: "Average cost per click for your ads" 
+    },
+    { 
+      label: "Landing Page Conversion Rate", 
+      key: "landingPageConversion" as keyof Inputs, 
+      suffix: "%",
+      tooltipContent: "Percentage of visitors who become leads" 
+    },
+    { 
+      label: "Discovery Call Rate", 
+      key: "discoveryCallRate" as keyof Inputs, 
+      suffix: "%",
+      tooltipContent: "Percentage of leads who schedule discovery calls" 
+    },
+    { 
+      label: "Sales Call Rate", 
+      key: "salesCallRate" as keyof Inputs, 
+      suffix: "%",
+      tooltipContent: "Percentage of discovery calls that lead to sales calls" 
+    },
+    { 
+      label: "Proposal Rate", 
+      key: "proposalRate" as keyof Inputs, 
+      suffix: "%",
+      tooltipContent: "Percentage of sales calls that result in proposals" 
+    },
+    { 
+      label: "Client Won Rate", 
+      key: "clientWonRate" as keyof Inputs, 
+      suffix: "%",
+      tooltipContent: "Percentage of proposals that convert to clients" 
+    },
   ];
 
   return (
