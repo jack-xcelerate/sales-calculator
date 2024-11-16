@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,9 +7,13 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: rgb(23, 32, 63);
+  background-color: #00142a;
   color: white;
-  font-family: 'Inter', sans-serif;
+  font-family: theme('fontFamily.alata');
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: theme('fontFamily.staatliches');
 }
 
 /* Input Styles */
@@ -19,7 +22,7 @@ body {
   width: 100%;
   height: 4px;
   border-radius: 2px;
-  background: rgba(249, 115, 22, 0.3);
+  background: rgba(255, 103, 0, 0.3);
   outline: none;
   margin: 1rem 0;
 }
@@ -30,21 +33,21 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: rgb(249, 115, 22);
+  background: #ff6700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .range-slider::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  background: rgb(249, 115, 22);
+  background: #ff6700;
 }
 
 .range-slider::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: rgb(249, 115, 22);
+  background: #ff6700;
   cursor: pointer;
   border: none;
   transition: all 0.2s ease;
@@ -56,17 +59,17 @@ body {
 
 input:focus {
   outline: none;
-  border-color: rgb(249, 115, 22);
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+  border-color: #ff6700;
+  box-shadow: 0 0 0 2px rgba(255, 103, 0, 0.2);
 }
 
 /* Component Styles */
 .metric-card {
-  @apply p-6 rounded-lg border border-orange-500/30 hover:border-orange-500 transition-all duration-200 bg-gray-800/50;
+  @apply p-6 rounded-lg border border-primary/30 hover:border-primary transition-all duration-200 bg-background/50;
 }
 
 .metric-card:hover {
-  @apply shadow-lg shadow-orange-500/10;
+  @apply shadow-lg shadow-primary/10;
 }
 
 .funnel-stage {
@@ -74,10 +77,34 @@ input:focus {
 }
 
 .funnel-stage-circle {
-  @apply w-20 h-20 rounded-full border border-orange-500/30 hover:border-orange-500 
-         flex flex-col items-center justify-center bg-gray-800/50 transition-all duration-200;
+  @apply w-20 h-20 rounded-full border border-primary/30 hover:border-primary 
+         flex flex-col items-center justify-center bg-background/50 transition-all duration-200;
 }
 
 .funnel-stage-circle:hover {
-  @apply shadow-lg shadow-orange-500/10;
+  @apply shadow-lg shadow-primary/10;
+}
+
+/* Section Styles */
+.section-header {
+  @apply border-b border-primary/30 pb-2 mb-8;
+}
+
+.section-header h2 {
+  @apply font-staatliches text-3xl text-white;
+}
+
+/* Input Styles */
+.input-label {
+  @apply font-alata text-sm text-white/90;
+}
+
+.input-field {
+  @apply bg-background/50 border border-primary/30 rounded-lg text-white 
+         focus:border-primary focus:ring-1 focus:ring-primary;
+}
+
+/* Navigation and Focus States */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
 }

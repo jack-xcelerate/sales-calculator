@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Staatliches, Alata } from 'next/font/google';
 import "./globals.css";
 
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: "--font-inter",
+const staatliches = Staatliches({ 
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-staatliches',
+});
+
+const alata = Alata({ 
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-alata',
 });
 
 export const metadata: Metadata = {
@@ -19,7 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans bg-[rgb(23,32,63)] min-h-screen antialiased`}>
+      <body 
+        className={`${staatliches.variable} ${alata.variable} font-alata bg-background min-h-screen antialiased`}
+      >
         {children}
       </body>
     </html>
