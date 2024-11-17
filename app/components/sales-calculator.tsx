@@ -237,60 +237,17 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     });
   };
 
-  const inputFields = [
-    {
-      label: "Average Lifetime Value",
-      key: "avgLifetimeValue" as keyof Inputs,
-      prefix: "$",
-      tooltipContent:
-        "The total revenue you expect to receive from a client throughout your entire relationship",
-    },
-    {
-      label: "Monthly Marketing Budget",
-      key: "monthlyMarketingBudget" as keyof Inputs,
-      prefix: "$",
-      tooltipContent: "How much you plan to spend on advertising each month",
-    },
-    {
-      label: "Cost Per Click",
-      key: "costPerClick" as keyof Inputs,
-      prefix: "$",
-      tooltipContent: "Average amount you pay for each click on your ads",
-    },
-    {
-      label: "Landing Page Conversion Rate",
-      key: "landingPageConversion" as keyof Inputs,
-      suffix: "%",
-      tooltipContent:
-        "Percentage of visitors who become leads by filling out your form",
-    },
-    {
-      label: "Discovery Call Rate",
-      key: "discoveryCallRate" as keyof Inputs,
-      suffix: "%",
-      tooltipContent: "Percentage of leads who schedule a discovery call",
-    },
-    {
-      label: "Sales Call Rate",
-      key: "salesCallRate" as keyof Inputs,
-      suffix: "%",
-      tooltipContent:
-        "Percentage of discovery calls that progress to sales calls",
-    },
-    {
-      label: "Proposal Rate",
-      key: "proposalRate" as keyof Inputs,
-      suffix: "%",
-      tooltipContent:
-        "Percentage of sales calls that result in sending a proposal",
-    },
-    {
-      label: "Client Won Rate",
-      key: "clientWonRate" as keyof Inputs,
-      suffix: "%",
-      tooltipContent: "Percentage of proposals that convert into paying clients",
-    },
-  ];
+  // Budget Planner Calculations
+  const targetCostPerLead =
+    metrics.leadToSale > 0
+      ? inputs.clientSpend / (metrics.leadToSale / 100)
+      : 0;
+
+  const expectedDailyLeads = metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0;
+
+  const dailyBudget = expectedDailyLeads * targetCostPerLead;
+
+  const monthlyBudget = dailyBudget * 30;
 
   return (
     <div className="min-h-screen p-8">
@@ -457,56 +414,31 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard
                 label="Lead To Sale Ratio"
-                value={`${metrics.leadToSale.toFixed(1)}%`} // Updated to display as a percentage
+                value={`${metrics.leadToSale.toFixed(1)}%`}
                 subtitle="Of leads become clients"
                 tooltipContent="Percentage of leads that convert into paying clients"
               />
               <MetricCard
-                label="Required Leads"
-                value={metrics.estLeads}
-                subtitle="Total leads needed"
-                tooltipContent="Number of leads required to reach your client goal"
-              />
-              <MetricCard
-                label="Expected Daily Leads"
-                value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0}
-                subtitle="Avg leads per day"
-                tooltipContent="Number of leads you need to generate each day"
-              />
-              <MetricCard
                 label="Target Cost Per Lead"
-                value={
-                  metrics.leadToSale > 0
-                    ? `$${(inputs.clientSpend * (100 / metrics.leadToSale)).toFixed(2)}`
-                    : "$0.00"
-                }
+                value={`$${targetCostPerLead.toFixed(2)}`}
                 subtitle="Target cost per lead"
                 tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio"
               />
               <MetricCard
+                label="Expected Daily Leads"
+                value={expectedDailyLeads}
+                subtitle="Avg leads per day"
+                tooltipContent="Number of leads you need to generate each day"
+              />
+              <MetricCard
                 label="Daily Budget"
-                value={
-                  metrics.leadToSale > 0 && metrics.estLeads > 0
-                    ? `$${(
-                        Math.ceil(metrics.estLeads / 30) *
-                        (inputs.clientSpend * (100 / metrics.leadToSale))
-                      ).toFixed(2)}`
-                    : "$0.00"
-                }
+                value={`$${dailyBudget.toFixed(2)}`}
                 subtitle="Recommended daily spend"
                 tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead"
               />
               <MetricCard
                 label="Monthly Budget"
-                value={
-                  metrics.leadToSale > 0 && metrics.estLeads > 0
-                    ? `$${(
-                        (Math.ceil(metrics.estLeads / 30) *
-                          (inputs.clientSpend * (100 / metrics.leadToSale))) *
-                        30
-                      ).toFixed(2)}`
-                    : "$0.00"
-                }
+                value={`$${monthlyBudget.toFixed(2)}`}
                 subtitle="Recommended monthly spend"
                 tooltipContent="Total monthly budget needed to reach your goals based on daily spend"
               />
@@ -527,7 +459,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
 
 // Initial state
 const initialInputState: Inputs = {
-  avgLifetimeValue: 4500,
+  avgLifetimeValue: 2000,
   monthlyMarketingBudget: 2000,
   costPerClick: 4,
   landingPageConversion: 5,
