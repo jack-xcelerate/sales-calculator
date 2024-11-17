@@ -268,7 +268,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
         <img 
           src="https://storage.googleapis.com/msgsndr/bXNFllgFgIK3oXo6R21q/media/66fe2aafed66474c1bb44c1f.png" 
           alt="Xcelerate Digital Systems Logo" 
-          className="h-16 object-contain"
+          className="h-8 object-contain"
         />
       </div>
 
@@ -437,11 +437,11 @@ const initialInputState: Inputs = {
   avgLifetimeValue: 1000,
   monthlyMarketingBudget: 2000,
   costPerClick: 2,
-  landingPageConversion: 30,
-  discoveryCallRate: 30,
-  salesCallRate: 30,
-  proposalRate: 30,
-  clientWonRate: 30,
+  landingPageConversion: 5,
+  discoveryCallRate: 40,
+  salesCallRate: 40,
+  proposalRate: 40,
+  clientWonRate: 40,
   targetNewClients: 10,
   clientSpend: 500,
 };
