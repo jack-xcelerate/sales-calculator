@@ -115,7 +115,6 @@ const SectionHeader = ({ title }: { title: string }) => (
     <div className="h-px bg-primary/20" />
   </div>
 );
-
 interface Metrics {
   clicks: number;
   leads: number;
@@ -174,7 +173,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     calculateMetrics();
   }, [inputs]);
-
   const calculateMetrics = () => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
@@ -190,7 +188,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
-    const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;
+    const leadToSale = leads > 0 ? newClients / leads : 0;  // Raw ratio, not percentage
 
     setMetrics({
       clicks,
@@ -310,8 +308,8 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               <MetricCard
                 label="Return on Ad Spend (ROAS)"
                 value={`${metrics.roas.toFixed(1)}x`}
-                subtitle="Revenue for each dollar spent"
-                tooltipContent="For every $1 spent on ads, you make this amount in revenue"
+                subtitle={`For every $1 spent you get $${metrics.roas.toFixed(2)} back`}
+                tooltipContent="Return on advertising investment"
               />
             </div>
           </div>
@@ -354,6 +352,12 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 subtitle={`Based on ${inputs.proposalRate}% rate`} 
                 tooltipContent="Number of proposals you need to send to reach your client goal" 
               />
+              <MetricCard 
+                label="Lead To Sale Ratio" 
+                value={metrics.leadToSale.toFixed(2)}
+                subtitle="Leads needed per client" 
+                tooltipContent="Number of leads needed to acquire one client" 
+              />
             </div>
             <div className="mt-8">
               <MetricCard 
@@ -364,7 +368,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
             </div>
           </div>
-
           {/* Budget Planner Section */}
           <div className="space-y-8">
             <SectionHeader title="Budget Planner" />
@@ -383,9 +386,15 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={`${metrics.leadToSale.toFixed(2)}%`} 
-                subtitle="Conversion ratio of leads to clients" 
-                tooltipContent="Percentage of leads that convert into clients" 
+                value={metrics.leadToSale.toFixed(2)} 
+                subtitle="Leads needed per client" 
+                tooltipContent="Number of leads needed to acquire one client" 
+              />
+              <MetricCard 
+                label="Required Leads" 
+                value={metrics.estLeads} 
+                subtitle="Total leads needed" 
+                tooltipContent="Number of leads required to reach your client goal" 
               />
               <MetricCard 
                 label="Expected Daily Leads" 
@@ -395,26 +404,31 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
               <MetricCard 
                 label="Target Cost Per Lead" 
-                value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend / metrics.leadToSale).toFixed(2)}` : "$0.00"} 
+                value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * metrics.leadToSale).toFixed(2)}` : "$0.00"} 
                 subtitle="Target cost per lead" 
                 tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
               />
               <MetricCard 
-                label="Daily Spend" 
-                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend / metrics.leadToSale)).toFixed(2)}` : "$0.00"} 
+                label="Daily Budget" 
+                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
+                  `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)).toFixed(2)}` : 
+                  "$0.00"} 
                 subtitle="Recommended daily spend" 
                 tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
               />
               <MetricCard 
-                label="Monthly Spend" 
-                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend / metrics.leadToSale)) * 30).toFixed(2)}` : "$0.00"} 
+                label="Monthly Budget" 
+                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
+                  `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)) * 30).toFixed(2)}` : 
+                  "$0.00"} 
                 subtitle="Recommended monthly spend" 
                 tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
               />
             </div>
           </div>
-          </div>
+        </div>
       </div>
+
       {/* Footer */}
       <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-primary/20">
         <p className="text-center text-white/60 font-alata">
@@ -424,7 +438,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     </div>
   );
 };
-
 // Initial state
 const initialInputState: Inputs = {
   avgLifetimeValue: 2000,
