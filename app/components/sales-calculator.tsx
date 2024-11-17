@@ -527,7 +527,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
 
 // Initial state
 const initialInputState: Inputs = {
-  avgLifetimeValue: 2000,
+  avgLifetimeValue: 4500,
   monthlyMarketingBudget: 2000,
   costPerClick: 4,
   landingPageConversion: 5,
