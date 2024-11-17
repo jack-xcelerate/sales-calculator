@@ -115,6 +115,7 @@ const SectionHeader = ({ title }: { title: string }) => (
     <div className="h-px bg-primary/20" />
   </div>
 );
+
 interface Metrics {
   clicks: number;
   leads: number;
@@ -173,6 +174,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     calculateMetrics();
   }, [inputs]);
+
   const calculateMetrics = () => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
@@ -411,12 +413,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 value={`${(metrics.leadToSale * 100).toFixed(1)}%`} 
                 subtitle="Overall conversion rate" 
                 tooltipContent="Percentage of leads that become paying clients across your entire funnel" 
-              />
-              <MetricCard 
-                label="Conversion Value" 
-                value={`$${(inputs.avgLifetimeValue * metrics.leadToSale).toFixed(2)}`} 
-                subtitle="Average value per lead" 
-                tooltipContent="Expected revenue value of each lead based on conversion rates" 
               />
             </div>
           </div>
