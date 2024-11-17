@@ -22,7 +22,6 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }: {
     {subtitle && <div className="text-sm font-alata text-white/60">{subtitle}</div>}
   </div>
 );
-
 // InputField component
 const InputField = ({ 
   label, 
@@ -130,6 +129,7 @@ interface Metrics {
   estDiscoveryCalls: number;
   estLeads: number;
   estRevenue: number;
+  leadToSale: number;
 }
 
 interface Inputs {
@@ -161,6 +161,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     estDiscoveryCalls: 0,
     estLeads: 0,
     estRevenue: 0,
+    leadToSale: 0,
   });
 
   useEffect(() => {
@@ -181,12 +182,16 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const newClients = proposalsSent * (inputs.clientWonRate / 100);
     const estimatedRevenue = newClients * inputs.avgLifetimeValue;
     const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
-  
+    
     // Corrected reverse calculations
     const estProposals = Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100));
     const estSalesCalls = Math.ceil(estProposals / (inputs.proposalRate / 100));
     const estDiscoveryCalls = Math.ceil(estSalesCalls / (inputs.salesCallRate / 100));
     const estLeads = Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100));
+    const leadToSale = (inputs.clientWonRate / 100) * 
+                  (inputs.proposalRate / 100) * 
+                  (inputs.salesCallRate / 100) * 
+                  (inputs.discoveryCallRate / 100);
   
     setMetrics({
       clicks,
@@ -202,6 +207,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       estDiscoveryCalls,
       estLeads,
       estRevenue: inputs.targetNewClients * inputs.avgLifetimeValue,
+      leadToSale,
     });
   };
 
@@ -257,6 +263,15 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
   ];
   return (
     <div className="min-h-screen p-8">
+      {/* Logo Header */}
+      <div className="max-w-4xl mx-auto mb-12">
+        <img 
+          src="https://storage.googleapis.com/msgsndr/bXNFllgFgIK3oXo6R21q/media/66fe2aafed66474c1bb44c1f.png" 
+          alt="Xcelerate Digital Systems Logo" 
+          className="h-16 object-contain"
+        />
+      </div>
+
       <div className="max-w-4xl mx-auto space-y-12">
         <div id="report" className="space-y-16">
           {/* Current/Estimated Sales Section */}
@@ -301,7 +316,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
             </div>
           </div>
-
           {/* Client Goals Section */}
           <div className="space-y-8">
             <SectionHeader title="Client Goals" />
@@ -372,7 +386,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 label="Expected Daily Leads" 
                 value={Math.ceil(metrics.estLeads / 30)} 
                 subtitle="Avg leads per day" 
-                tooltipContent="Average number of leads you need to generate each day" 
+                tooltipContent="Number of leads you need to generate each day" 
               />
               <MetricCard 
                 label="Cost Per Lead Target" 
@@ -392,13 +406,32 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 subtitle="Recommended monthly spend" 
                 tooltipContent="Total monthly budget needed to reach your goals" 
               />
+              <MetricCard 
+                label="Lead To Sale Ratio" 
+                value={`${(metrics.leadToSale * 100).toFixed(1)}%`} 
+                subtitle="Overall conversion rate" 
+                tooltipContent="Percentage of leads that become paying clients across your entire funnel" 
+              />
+              <MetricCard 
+                label="Conversion Value" 
+                value={`$${(inputs.avgLifetimeValue * metrics.leadToSale).toFixed(2)}`} 
+                subtitle="Average value per lead" 
+                tooltipContent="Expected revenue value of each lead based on conversion rates" 
+              />
             </div>
           </div>
-        </div>
+          </div>
+      </div>
+      {/* Footer */}
+      <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-primary/20">
+        <p className="text-center text-white/60 font-alata">
+          App Built By Xcelerate Digital Systems
+        </p>
       </div>
     </div>
   );
 };
+
 // Initial state
 const initialInputState: Inputs = {
   avgLifetimeValue: 1000,
