@@ -190,9 +190,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
-    const leadToSale = (inputs.clientWonRate > 0 && inputs.proposalRate > 0 && inputs.salesCallRate > 0 && inputs.discoveryCallRate > 0)
-      ? (inputs.clientWonRate / 100) * (inputs.proposalRate / 100) * (inputs.salesCallRate / 100) * (inputs.discoveryCallRate / 100)
-      : 0;
+    const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;
 
     setMetrics({
       clicks,
@@ -384,10 +382,10 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard 
-                label="Number Of Leads" 
-                value={metrics.estLeads} 
-                subtitle="Total leads needed based on client goals" 
-                tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
+                label="Lead To Sale Ratio" 
+                value={`${metrics.leadToSale.toFixed(2)}%`} 
+                subtitle="Conversion ratio of leads to clients" 
+                tooltipContent="Percentage of leads that convert into clients" 
               />
               <MetricCard 
                 label="Expected Daily Leads" 
