@@ -184,17 +184,16 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const newClients = proposalsSent * (inputs.clientWonRate / 100);
     const estimatedRevenue = newClients * inputs.avgLifetimeValue;
     const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
-    
+
     // Corrected reverse calculations
-    const estProposals = Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100));
-    const estSalesCalls = Math.ceil(estProposals / (inputs.proposalRate / 100));
-    const estDiscoveryCalls = Math.ceil(estSalesCalls / (inputs.salesCallRate / 100));
-    const estLeads = Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100));
-    const leadToSale = (inputs.clientWonRate / 100) * 
-                  (inputs.proposalRate / 100) * 
-                  (inputs.salesCallRate / 100) * 
-                  (inputs.discoveryCallRate / 100);
-  
+    const estProposals = inputs.clientWonRate > 0 ? Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100)) : 0;
+    const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
+    const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
+    const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
+    const leadToSale = (inputs.clientWonRate > 0 && inputs.proposalRate > 0 && inputs.salesCallRate > 0 && inputs.discoveryCallRate > 0)
+      ? (inputs.clientWonRate / 100) * (inputs.proposalRate / 100) * (inputs.salesCallRate / 100) * (inputs.discoveryCallRate / 100)
+      : 0;
+
     setMetrics({
       clicks,
       leads,
@@ -385,34 +384,34 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard 
+                label="Number Of Leads" 
+                value={metrics.estLeads} 
+                subtitle="Total leads needed based on client goals" 
+                tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
+              />
+              <MetricCard 
                 label="Expected Daily Leads" 
-                value={Math.ceil(metrics.estLeads / 30)} 
+                value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
                 subtitle="Avg leads per day" 
                 tooltipContent="Number of leads you need to generate each day" 
               />
               <MetricCard 
-                label="Cost Per Lead Target" 
-                value={`$${(inputs.clientSpend / metrics.estLeads).toFixed(2)}`} 
+                label="Target Cost Per Lead" 
+                value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend / metrics.leadToSale).toFixed(2)}` : "$0.00"} 
                 subtitle="Target cost per lead" 
-                tooltipContent="Maximum amount you should spend to acquire each lead" 
+                tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
               />
               <MetricCard 
-                label="Daily Budget" 
-                value={`$${((inputs.clientSpend / metrics.estLeads) * Math.ceil(metrics.estLeads / 30)).toFixed(2)}`} 
+                label="Daily Spend" 
+                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend / metrics.leadToSale)).toFixed(2)}` : "$0.00"} 
                 subtitle="Recommended daily spend" 
-                tooltipContent="Suggested daily advertising budget" 
+                tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
               />
               <MetricCard 
-                label="Monthly Budget" 
-                value={`$${(inputs.clientSpend * Math.ceil(metrics.estLeads / 30)).toFixed(2)}`} 
+                label="Monthly Spend" 
+                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend / metrics.leadToSale)) * 30).toFixed(2)}` : "$0.00"} 
                 subtitle="Recommended monthly spend" 
-                tooltipContent="Total monthly budget needed to reach your goals" 
-              />
-              <MetricCard 
-                label="Lead To Sale Ratio" 
-                value={`${(metrics.leadToSale * 100).toFixed(1)}%`} 
-                subtitle="Overall conversion rate" 
-                tooltipContent="Percentage of leads that become paying clients across your entire funnel" 
+                tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
               />
             </div>
           </div>
