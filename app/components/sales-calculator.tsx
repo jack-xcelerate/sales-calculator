@@ -182,13 +182,11 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const newClients = proposalsSent * (inputs.clientWonRate / 100);
     const estimatedRevenue = newClients * inputs.avgLifetimeValue;
     const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
-
-    // Corrected reverse calculations
     const estProposals = inputs.clientWonRate > 0 ? Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100)) : 0;
     const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
-    const leadToSale = leads > 0 ? newClients / leads : 0;  // Raw ratio, not percentage
+    const leadToSale = leads > 0 ? ((newClients / leads) * 100).toFixed(1) : "0.0";
 
     setMetrics({
       clicks,
@@ -386,9 +384,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={metrics.leadToSale.toFixed(2)} 
-                subtitle="Leads needed per client" 
-                tooltipContent="Number of leads needed to acquire one client" 
+                value={`${metrics.leadToSale.toFixed(1)}%`} 
+                subtitle="Of leads become clients" 
+                tooltipContent="Percentage of leads that convert into paying clients" 
               />
               <MetricCard 
                 label="Required Leads" 
