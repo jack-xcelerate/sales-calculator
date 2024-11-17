@@ -431,11 +431,11 @@ const initialInputState: Inputs = {
   monthlyMarketingBudget: 2000,
   costPerClick: 4,
   landingPageConversion: 5,
-  discoveryCallRate: 40,
-  salesCallRate: 40,
-  proposalRate: 40,
-  clientWonRate: 40,
-  targetNewClients: 10,
+  discoveryCallRate: 50,
+  salesCallRate: 50,
+  proposalRate: 50,
+  clientWonRate: 50,
+  targetNewClients: 2,
   clientSpend: 500,
 };
 
