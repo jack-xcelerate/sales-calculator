@@ -147,6 +147,88 @@ interface Inputs {
   targetNewClients: number;
   clientSpend: number;
 }
+// Add this after your existing component definitions (InputField, MetricCard, etc.)
+const CTASection = ({ metrics }: { metrics: Metrics }) => {
+  const handleGetGamePlan = () => {
+    // Store calculator results in localStorage before redirect
+    const resultsToSave = {
+      monthlyRevenue: Math.round(metrics.estimatedRevenue),
+      newClients: Math.round(metrics.newClients),
+      roas: metrics.roas.toFixed(1),
+      leadsNeeded: Math.round(metrics.estLeads)
+    };
+    localStorage.setItem('calculatorResults', JSON.stringify(resultsToSave));
+    
+    // Redirect to landing page
+    window.location.href = 'https://xceleratedigitalsystems.com/xds-game-plan'; 
+  };
+
+  return (
+    <div className="bg-primary/10 rounded-xl p-8 mt-16">
+      <div className="text-center space-y-8">
+        <div className="space-y-2">
+          <h3 className="text-3xl font-staatliches text-white">
+            Your Business Growth Potential
+          </h3>
+          <p className="text-white/80">
+            Based on your numbers, here's what you could achieve:
+          </p>
+        </div>
+
+        {/* Key Metrics Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="space-y-1">
+            <div className="text-3xl font-staatliches text-primary">
+              ${Math.round(metrics.estimatedRevenue).toLocaleString()}
+            </div>
+            <div className="text-sm text-white/60">Monthly Revenue</div>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-staatliches text-primary">
+              {Math.round(metrics.newClients)}
+            </div>
+            <div className="text-sm text-white/60">New Clients/Month</div>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-staatliches text-primary">
+              {metrics.roas.toFixed(1)}x
+            </div>
+            <div className="text-sm text-white/60">Return on Ad Spend</div>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-staatliches text-primary">
+              {Math.round(metrics.estLeads)}
+            </div>
+            <div className="text-sm text-white/60">Leads Needed</div>
+          </div>
+        </div>
+
+        {/* CTA Button */}
+        <div className="space-y-4">
+          <button
+            onClick={handleGetGamePlan}
+            className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg 
+                     font-staatliches text-xl transition-all transform hover:scale-105
+                     shadow-lg hover:shadow-xl"
+          >
+            Get Your Free XDS Game Plan →
+          </button>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/60">
+            <span className="flex items-center">
+              <span className="text-primary mr-1">✓</span> Customised Strategy
+            </span>
+            <span className="flex items-center">
+              <span className="text-primary mr-1">✓</span> Implementation Timeline
+            </span>
+            <span className="flex items-center">
+              <span className="text-primary mr-1">✓</span> ROI Projection
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
   const [inputs, setInputs] = useState<Inputs>(initialInputs);
@@ -212,10 +294,10 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
 
   const inputFields = [
     { 
-      label: "Average Lifetime Value", 
+      label: "Average Client Value (LTV)", 
       key: "avgLifetimeValue" as keyof Inputs, 
       prefix: "$",
-      tooltipContent: "The total revenue you expect to receive from a client throughout your entire relationship" 
+      tooltipContent: "How much revenue you expect to make from each client over your entire relationship" 
     },
     { 
       label: "Monthly Marketing Budget", 
@@ -224,40 +306,40 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       tooltipContent: "How much you plan to spend on advertising each month" 
     },
     { 
-      label: "Cost Per Click", 
+      label: "Cost Per Click (CPC)", 
       key: "costPerClick" as keyof Inputs, 
       prefix: "$",
       tooltipContent: "Average amount you pay for each click on your ads" 
     },
     { 
-      label: "Landing Page Conversion Rate", 
+      label: "Online Conversion Rate", 
       key: "landingPageConversion" as keyof Inputs, 
       suffix: "%",
       tooltipContent: "Percentage of visitors who become leads by filling out your form" 
     },
     { 
-      label: "Discovery Call Rate", 
+      label: "Initial Consultation Rate (Discovery Call)", 
       key: "discoveryCallRate" as keyof Inputs, 
       suffix: "%",
-      tooltipContent: "Percentage of leads who schedule a discovery call" 
+      tooltipContent: "How many enquiries lead to an initial consultation" 
     },
     { 
-      label: "Sales Call Rate", 
+      label: "Follow-up Meeting Rat (Sales Call)", 
       key: "salesCallRate" as keyof Inputs, 
       suffix: "%",
       tooltipContent: "Percentage of discovery calls that progress to sales calls" 
     },
     { 
-      label: "Proposal Rate", 
+      label: "Quote/Proposal Rate", 
       key: "proposalRate" as keyof Inputs, 
       suffix: "%",
-      tooltipContent: "Percentage of sales calls that result in sending a proposal" 
+      tooltipContent: "How many follow-up meetings result in sending a quote" 
     },
     { 
-      label: "Client Won Rate", 
+      label: "Win Rate", 
       key: "clientWonRate" as keyof Inputs, 
       suffix: "%",
-      tooltipContent: "Percentage of proposals that convert into paying clients" 
+      tooltipContent: "How many quotes turn into paying clients" 
     },
   ];
 
@@ -339,28 +421,28 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
               />
               <MetricCard 
-                label="Required Discovery Calls" 
+                label="Required Initial Consults" 
                 value={metrics.estDiscoveryCalls} 
                 subtitle={`Based on ${inputs.discoveryCallRate}% call rate`} 
-                tooltipContent="Number of discovery calls needed to achieve your client goal" 
+                tooltipContent="Number of initial consultations needed" 
               />
               <MetricCard 
-                label="Required Sales Calls" 
+                label="Required Follow-ups" 
                 value={metrics.estSalesCalls} 
                 subtitle={`Based on ${inputs.salesCallRate}% rate`} 
-                tooltipContent="Number of sales calls needed to reach your client goal" 
+                tooltipContent="Number of follow-up meetings needed" 
               />
               <MetricCard 
-                label="Required Proposals" 
+                label="Required Quotes" 
                 value={metrics.estProposals} 
                 subtitle={`Based on ${inputs.proposalRate}% rate`} 
-                tooltipContent="Number of proposals you need to send to reach your client goal" 
+                tooltipContent="Number of quotes you need to send" 
               />
               <MetricCard 
-                label="Lead To Sale Ratio" 
+                label="Lead To Client Ratio" 
                 value={`${metrics.leadToSale.toFixed(1)}%`}
                 subtitle="Of leads become clients"
-                tooltipContent="Percentage of leads that convert into paying clients" 
+                tooltipContent="Your success rate at converting leads to clients" 
               />
             </div>
             <div className="mt-8">
@@ -378,7 +460,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             <SectionHeader title="Budget Planner" />
             <div className="max-w-lg mb-8">
               <InputField
-                label="Client Acquisition Cost"
+                label="Cost to Win a Client"
                 value={inputs.clientSpend}
                 onChange={(e) => setInputs(prev => ({
                   ...prev,
@@ -388,7 +470,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Maximum amount you're willing to spend to acquire one new client"
               />
               <p className="mt-2 text-sm text-white/60">
-                Industry benchmark: CAC should be ⅓ or less of Customer Lifetime Value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
+                Industry benchmark: Your cost to win a client should be no more than ⅓ of their total value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -413,27 +495,28 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               <MetricCard 
                 label="Max Cost Per Lead" 
                 value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : "$0.00"} 
-                subtitle="Max cost per lead to remain profitable" 
-                tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
+                subtitle="Maximum cost per lead to stay profitable" 
+                tooltipContent="Suggested daily budget to achieve your goals" 
               />
               <MetricCard 
-                label="Max Daily Budget" 
+                label="Suggested Daily Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Maximum daily spend needed with current metrics" 
+                subtitle="Recommended daily ad spend" 
                 tooltipContent="Max daily advertising budget based on expected daily leads and target cost per lead" 
               />
               <MetricCard 
-                label="Monthly Budget" 
+                label="Monthly Budget Required" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Max monthly spend reccomended based of current metrics" 
-                tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
+                subtitle="Total monthly investment needed" 
+                tooltipContent="Recommended monthly budget based on your goals and current performance" 
               />
             </div>
           </div>
+          <CTASection metrics={metrics} />
         </div>
       </div>
 
