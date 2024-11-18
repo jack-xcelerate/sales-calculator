@@ -60,9 +60,9 @@ const InputField = ({
         min={min}
         max={max}
         onChange={onChange}
-        className={w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
+        className={`w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
                    focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors
-                   ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-8' : ''}}
+                   ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-8' : ''}`}
       />
       {prefix && (
         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary font-medium">
@@ -164,16 +164,15 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     leadToSale: 0,
   });
 
-  // Remove this useEffect completely
-useEffect(() => {
-  const savedInputs = localStorage.getItem('calculatorInputs');
-  if (savedInputs) setInputs(JSON.parse(savedInputs));
-}, []);
+  useEffect(() => {
+    const savedInputs = localStorage.getItem('calculatorInputs');
+    if (savedInputs) setInputs(JSON.parse(savedInputs));
+  }, []);
 
-// Change this useEffect to only calculate metrics
-useEffect(() => {
-  calculateMetrics();
-}, [inputs]);
+  useEffect(() => {
+    localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
+    calculateMetrics();
+  }, [inputs]);
   const calculateMetrics = () => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
@@ -183,13 +182,11 @@ useEffect(() => {
     const newClients = proposalsSent * (inputs.clientWonRate / 100);
     const estimatedRevenue = newClients * inputs.avgLifetimeValue;
     const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
-
-    // Corrected reverse calculations
     const estProposals = inputs.clientWonRate > 0 ? Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100)) : 0;
     const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
-    const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;
+    const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;  
 
     setMetrics({
       clicks,
@@ -302,14 +299,14 @@ useEffect(() => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
               <MetricCard
                 label="Estimated Monthly Revenue"
-                value={$${metrics.estimatedRevenue.toLocaleString()}}
-                subtitle={Based on ${Math.round(metrics.newClients)} new clients per month}
+                value={`$${metrics.estimatedRevenue.toLocaleString()}`}
+                subtitle={`Based on ${Math.round(metrics.newClients)} new clients per month`}
                 tooltipContent="Projected monthly revenue based on your current conversion rates"
               />
               <MetricCard
                 label="Return on Ad Spend (ROAS)"
-                value={${metrics.roas.toFixed(1)}x}
-                subtitle={For every $1 spent you get $${metrics.roas.toFixed(2)} back}
+                value={`${metrics.roas.toFixed(1)}x`}
+                subtitle={`For every $1 spent you get $${metrics.roas.toFixed(2)} back`}
                 tooltipContent="Return on advertising investment"
               />
             </div>
@@ -338,24 +335,24 @@ useEffect(() => {
               <MetricCard 
                 label="Required Discovery Calls" 
                 value={metrics.estDiscoveryCalls} 
-                subtitle={Based on ${inputs.discoveryCallRate}% call rate} 
+                subtitle={`Based on ${inputs.discoveryCallRate}% call rate`} 
                 tooltipContent="Number of discovery calls needed to achieve your client goal" 
               />
               <MetricCard 
                 label="Required Sales Calls" 
                 value={metrics.estSalesCalls} 
-                subtitle={Based on ${inputs.salesCallRate}% rate} 
+                subtitle={`Based on ${inputs.salesCallRate}% rate`} 
                 tooltipContent="Number of sales calls needed to reach your client goal" 
               />
               <MetricCard 
                 label="Required Proposals" 
                 value={metrics.estProposals} 
-                subtitle={Based on ${inputs.proposalRate}% rate} 
+                subtitle={`Based on ${inputs.proposalRate}% rate`} 
                 tooltipContent="Number of proposals you need to send to reach your client goal" 
               />
               <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={${metrics.leadToSale.toFixed(1)}%} // Add % sign
+                value={`${metrics.leadToSale.toFixed(1)}%`} // Add % sign
                 subtitle="Of leads become clients" // Updated description
                 tooltipContent="Percentage of leads that convert into paying clients" 
               />
@@ -363,7 +360,7 @@ useEffect(() => {
             <div className="mt-8">
               <MetricCard 
                 label="Projected Revenue Impact" 
-                value={$${metrics.estRevenue.toLocaleString()}} 
+                value={`$${metrics.estRevenue.toLocaleString()}`} 
                 subtitle="Total lifetime value from target clients" 
                 tooltipContent="Potential revenue from achieving your new client goal" 
               />
@@ -385,9 +382,9 @@ useEffect(() => {
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <MetricCard 
+            <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={${metrics.leadToSale.toFixed(1)}%} // Add % sign
+                value={`${metrics.leadToSale.toFixed(1)}%`} // Add % sign
                 subtitle="Of leads become clients" // Updated description
                 tooltipContent="Percentage of leads that convert into paying clients" 
               />
@@ -406,7 +403,7 @@ useEffect(() => {
               <MetricCard 
                 label="Target Cost Per Lead" 
                 value={metrics.leadToSale > 0 ? 
-                $${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)} : 
+                `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : 
                 "$0.00"} 
                 subtitle="Target cost per lead" 
                 tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
@@ -414,7 +411,7 @@ useEffect(() => {
               <MetricCard 
                 label="Daily Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-                $${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)} : 
+                `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
                 "$0.00"} 
                 subtitle="Recommended daily spend" 
                 tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
@@ -422,7 +419,7 @@ useEffect(() => {
               <MetricCard 
                 label="Monthly Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-                $${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)} : 
+                `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
                 "$0.00"} 
                 subtitle="Recommended monthly spend" 
                 tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
@@ -443,7 +440,7 @@ useEffect(() => {
 };
    // Initial state
 const initialInputState: Inputs = {
-  avgLifetimeValue: 4500,
+  avgLifetimeValue: 2000,
   monthlyMarketingBudget: 2000,
   costPerClick: 4,
   landingPageConversion: 5,
