@@ -164,13 +164,8 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     leadToSale: 0,
   });
 
-  useEffect(() => {
-    const savedInputs = localStorage.getItem('calculatorInputs');
-    if (savedInputs) setInputs(JSON.parse(savedInputs));
-  }, []);
 
   useEffect(() => {
-    localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     calculateMetrics();
   }, [inputs]);
   const calculateMetrics = () => {
