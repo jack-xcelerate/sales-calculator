@@ -1,4 +1,5 @@
 
+/* eslint-disable react/no-unescaped-entities */
 "use client"
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -325,7 +326,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       tooltipContent: "How many enquiries lead to an initial consultation" 
     },
     { 
-      label: "Follow-up Meeting Rat (Sales Call)", 
+      label: "Follow-up Meeting Rate (Sales Call)", 
       key: "salesCallRate" as keyof Inputs, 
       suffix: "%",
       tooltipContent: "Percentage of discovery calls that progress to sales calls" 
@@ -354,6 +355,8 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
           width={200}
           height={50}
           className="h-8 object-contain"
+          priority  // This will preload the image
+          quality={90}  
         />
       </div>
 
