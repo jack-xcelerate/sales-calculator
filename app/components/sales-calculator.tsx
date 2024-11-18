@@ -261,7 +261,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     },
   ];
 
-  return (
+  rreturn (
     <div className="min-h-screen p-8">
       {/* Logo Header */}
       <div className="max-w-4xl mx-auto mb-12">
