@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Tooltip } from './ui/tooltip';
+import { Tooltip } from './components/ui/tooltip';
 import { Info } from 'lucide-react';
 import { QuickStartGuide } from './components/QuickStartGuide';
 import { FunnelVisualization } from './components/FunnelVisualization';
