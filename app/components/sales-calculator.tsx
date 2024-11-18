@@ -417,19 +417,19 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
               />
               <MetricCard 
-                label="Daily Budget" 
+                label="Max Daily Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Recommended daily spend" 
-                tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
+                subtitle="Maximum daily spend needed with current metrics" 
+                tooltipContent="Max daily advertising budget based on expected daily leads and target cost per lead" 
               />
               <MetricCard 
                 label="Monthly Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Recommended monthly spend" 
+                subtitle="Max monthly spend reccomended based of current metrics" 
                 tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
               />
             </div>
