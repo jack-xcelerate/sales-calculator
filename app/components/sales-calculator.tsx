@@ -251,6 +251,40 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     leadToSale: 0,
   });
 
+  // Define calculateMetrics before using it in useEffect
+  const calculateMetrics = useCallback(() => {
+    const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
+    const leads = clicks * (inputs.landingPageConversion / 100);
+    const discoveryCalls = leads * (inputs.discoveryCallRate / 100);
+    const salesCalls = discoveryCalls * (inputs.salesCallRate / 100);
+    const proposalsSent = salesCalls * (inputs.proposalRate / 100);
+    const newClients = proposalsSent * (inputs.clientWonRate / 100);
+    const estimatedRevenue = newClients * inputs.avgLifetimeValue;
+    const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
+    const estProposals = inputs.clientWonRate > 0 ? Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100)) : 0;
+    const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
+    const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
+    const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
+    const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;  
+  
+    setMetrics({
+      clicks,
+      leads,
+      discoveryCalls,
+      salesCalls,
+      proposalsSent,
+      newClients,
+      estimatedRevenue,
+      roas,
+      estProposals,
+      estSalesCalls,
+      estDiscoveryCalls,
+      estLeads,
+      estRevenue: inputs.targetNewClients * inputs.avgLifetimeValue,
+      leadToSale,
+    });
+  }, [inputs]);
+
   useEffect(() => {
     const savedInputs = localStorage.getItem('calculatorInputs');
     if (savedInputs) setInputs(JSON.parse(savedInputs));
