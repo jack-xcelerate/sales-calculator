@@ -1,11 +1,11 @@
 
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+
 // MetricCard component
 const MetricCard = ({ label, value, subtitle, tooltipContent }: {
   label: string;
@@ -274,7 +274,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
     const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;  
-
+  
     setMetrics({
       clicks,
       leads,
@@ -291,7 +291,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       estRevenue: inputs.targetNewClients * inputs.avgLifetimeValue,
       leadToSale,
     });
-  }; [inputs]);
+  }, [inputs]);
 
   const inputFields = [
     { 
@@ -351,8 +351,8 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
         <Image 
           src="https://storage.googleapis.com/msgsndr/bXNFllgFgIK3oXo6R21q/media/66fe2aafed66474c1bb44c1f.png"
           alt="Xcelerate Digital Systems Logo" 
-          width={128}
-          height={32}
+          width={200}
+          height={50}
           className="h-8 object-contain"
         />
       </div>
