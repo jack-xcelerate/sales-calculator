@@ -61,9 +61,9 @@ const InputField = ({
         min={min}
         max={max}
         onChange={onChange}
-        className={`w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
+        className={w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
                    focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors
-                   ${prefix ? "pl-8" : ""} ${suffix ? "pr-8" : ""}`}
+                   ${prefix ? "pl-8" : ""} ${suffix ? "pr-8" : ""}}
       />
       {prefix && (
         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary font-medium">
