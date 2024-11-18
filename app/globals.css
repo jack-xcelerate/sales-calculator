@@ -108,3 +108,14 @@ input:focus {
 .focus-ring {
   @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
 }
+.funnel-section {
+  transition: all 0.3s ease-in-out;
+}
+
+.range-slider {
+  @apply appearance-none w-full h-2 rounded-lg bg-primary/20;
+}
+
+.range-slider::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 rounded-full bg-primary cursor-pointer;
+}

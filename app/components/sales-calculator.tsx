@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
-import { Dialog } from '@/components/ui/dialog';
 import { QuickStartGuide } from './QuickStartGuide';
 import { FunnelVisualization } from './FunnelVisualization';
 
