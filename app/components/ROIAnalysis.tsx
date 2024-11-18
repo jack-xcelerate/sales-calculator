@@ -1,8 +1,8 @@
-// components/ROIAnalysis.tsx
+// app/components/ROIAnalysis.tsx
 import React from 'react';
 import { Metrics, Inputs } from '../types';
-import { MetricCard } from '../components/MetricCard';
-import { SectionHeader } from '../components/SectionHeader';
+import { MetricCard } from './MetricCard';
+import { SectionHeader } from './SectionHeader';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const ROIAnalysis: React.FC<{ metrics: Metrics; inputs: Inputs }> = ({ metrics, inputs }) => {

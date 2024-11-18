@@ -1,11 +1,17 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Tooltip } from './components/ui/tooltip';
+import { Tooltip } from '@/components/ui/tooltip';
 import { Info } from 'lucide-react';
-import { QuickStartGuide } from './components/QuickStartGuide';
-import { FunnelVisualization } from './components/FunnelVisualization';
-import { ROIAnalysis } from './components/ROIAnalysis';
+import { QuickStartGuide } from '@/components/QuickStartGuide';
+import { FunnelVisualization } from '@/components/FunnelVisualization';
+import { ROIAnalysis } from '@/components/ROIAnalysis';
+import { MetricCard } from '@/components/MetricCard';
+import { SectionHeader } from '@/components/SectionHeader';
+
+// Also, create a types.ts file in your app directory
+import { Metrics, Inputs } from '@/types';
+
 
 // Interfaces
 interface Metrics {
