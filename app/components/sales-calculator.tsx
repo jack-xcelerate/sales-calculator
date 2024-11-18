@@ -4,7 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
-
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 // MetricCard component
 const MetricCard = ({ label, value, subtitle, tooltipContent }: {
   label: string;
@@ -257,9 +258,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
   useEffect(() => {
     localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     calculateMetrics();
-  }, [inputs]);
+  }, [inputs, calculateMetrics]);
 
-  const calculateMetrics = () => {
+  const calculateMetrics = useCallback(() => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
     const discoveryCalls = leads * (inputs.discoveryCallRate / 100);
@@ -290,7 +291,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       estRevenue: inputs.targetNewClients * inputs.avgLifetimeValue,
       leadToSale,
     });
-  };
+  }; [inputs]);
 
   const inputFields = [
     { 
@@ -347,9 +348,11 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     <div className="min-h-screen p-8">
       {/* Logo Header */}
       <div className="max-w-4xl mx-auto mb-12">
-        <img 
-          src="https://storage.googleapis.com/msgsndr/bXNFllgFgIK3oXo6R21q/media/66fe2aafed66474c1bb44c1f.png" 
+        <Image 
+          src="https://storage.googleapis.com/msgsndr/bXNFllgFgIK3oXo6R21q/media/66fe2aafed66474c1bb44c1f.png"
           alt="Xcelerate Digital Systems Logo" 
+          width={128}
+          height={32}
           className="h-8 object-contain"
         />
       </div>
@@ -470,7 +473,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Maximum amount you're willing to spend to acquire one new client"
               />
               <p className="mt-2 text-sm text-white/60">
-                Industry benchmark: Your cost to win a client should be no more than ⅓ of their total value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
+                  Industry benchmark: Your cost to win a client should be no more than &frac13; of their total value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
