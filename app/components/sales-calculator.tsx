@@ -476,7 +476,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             <SectionHeader title="Budget Planner" />
             <div className="max-w-lg mb-8">
               <InputField
-                label="Cost to Win a Client"
+                label="Max Cost to Win a Client"
                 value={inputs.clientSpend}
                 onChange={(e) => setInputs(prev => ({
                   ...prev,
