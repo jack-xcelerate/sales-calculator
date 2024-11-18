@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
+import { Dialog } from '@/components/ui/dialog';
+import { QuickStartGuide } from './QuickStartGuide';
+import { FunnelVisualization } from './FunnelVisualization';
 
 // MetricCard component
 const MetricCard = ({ label, value, subtitle, tooltipContent }: {
@@ -145,8 +148,16 @@ interface Inputs {
   clientSpend: number;
 }
 
-const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
-  const [inputs, setInputs] = useState<Inputs>(initialInputs);
+const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioIndex }: { 
+  inputs: Inputs;
+  onUpdateScenario?: (inputs: Inputs) => void;
+  scenarioIndex: number;
+}) => {
+  const [inputs, setInputs] = useState<Inputs>({
+    ...initialInputs,
+    clientSpend: Math.min(initialInputs.avgLifetimeValue / 3, initialInputs.clientSpend)
+  });
+  const [showQuickStart, setShowQuickStart] = useState(false);
   const [metrics, setMetrics] = useState<Metrics>({
     clicks: 0,
     leads: 0,
@@ -162,12 +173,21 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     estLeads: 0,
     estRevenue: 0,
     leadToSale: 0,
+    breakEvenPoint: 0,
+    profitMargin: 0,
+    paybackPeriod: 0
   });
 
+  useEffect(() => {
+    const savedInputs = localStorage.getItem('calculatorInputs');
+    if (savedInputs) setInputs(JSON.parse(savedInputs));
+  }, []);
 
   useEffect(() => {
+    localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     calculateMetrics();
   }, [inputs]);
+
   const calculateMetrics = () => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
@@ -178,12 +198,18 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const estimatedRevenue = newClients * inputs.avgLifetimeValue;
     const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
 
-    // Corrected reverse calculations
+    // Reverse calculations
     const estProposals = inputs.clientWonRate > 0 ? Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100)) : 0;
     const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
-    const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;
+    const leadToSale = leads > 0 ? newClients / leads : 0;
+
+    // New ROI and break-even calculations
+    const monthlyProfit = estimatedRevenue - inputs.monthlyMarketingBudget;
+    const profitMargin = estimatedRevenue > 0 ? (monthlyProfit / estimatedRevenue) * 100 : 0;
+    const breakEvenPoint = monthlyProfit > 0 ? inputs.monthlyMarketingBudget / monthlyProfit : 0;
+    const paybackPeriod = estimatedRevenue > 0 ? inputs.monthlyMarketingBudget / (estimatedRevenue / 12) : 0;
 
     setMetrics({
       clicks,
@@ -200,7 +226,43 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       estLeads,
       estRevenue: inputs.targetNewClients * inputs.avgLifetimeValue,
       leadToSale,
+      breakEvenPoint,
+      profitMargin,
+      paybackPeriod
     });
+  };
+
+  const handleInputChange = (key: keyof Inputs, value: number | string) => {
+    let updatedInputs = { ...inputs };
+
+    if (key === 'avgLifetimeValue') {
+      const numValue = Number(value);
+      const recommendedClientSpend = numValue / 3;
+      updatedInputs = {
+        ...updatedInputs,
+        [key]: numValue,
+        clientSpend: Math.min(inputs.clientSpend, recommendedClientSpend)
+      };
+    } else if (key === 'clientSpend') {
+      updatedInputs[key] = Math.min(Number(value), inputs.avgLifetimeValue / 3);
+    } else if (key === 'scenarioName') {
+      updatedInputs[key] = value as string;
+    } else {
+      updatedInputs[key] = Number(value);
+    }
+
+    setInputs(updatedInputs);
+    onUpdateScenario?.(updatedInputs);
+  };
+
+  const resetToDefaults = () => {
+    const defaultInputs = {
+      ...initialInputState,
+      scenarioName: `Scenario ${scenarioIndex + 1}`,
+      clientSpend: initialInputState.avgLifetimeValue / 3
+    };
+    setInputs(defaultInputs);
+    onUpdateScenario?.(defaultInputs);
   };
 
   const inputFields = [
@@ -208,7 +270,14 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       label: "Average Lifetime Value", 
       key: "avgLifetimeValue" as keyof Inputs, 
       prefix: "$",
-      tooltipContent: "The total revenue you expect to receive from a client throughout your entire relationship" 
+      tooltipContent: "The total revenue you expect from a client throughout your entire relationship",
+    },
+    {
+      label: "Client Acquisition Cost",
+      key: "clientSpend" as keyof Inputs,
+      prefix: "$",
+      tooltipContent: "Maximum amount to spend acquiring one client",
+      helperText: `Recommended: Up to $${(inputs.avgLifetimeValue / 3).toFixed(2)} (1/3 of lifetime value)`
     },
     { 
       label: "Monthly Marketing Budget", 
@@ -265,7 +334,32 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
       </div>
 
       <div className="max-w-4xl mx-auto space-y-12">
-        <div id="report" className="space-y-16">
+        {/* Header Actions */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <input
+            type="text"
+            value={inputs.scenarioName}
+            onChange={(e) => handleInputChange('scenarioName', e.target.value)}
+            className="bg-transparent border-b border-primary/20 px-2 py-1 text-white font-staatliches text-xl focus:outline-none focus:border-primary"
+          />
+          <div className="flex gap-4">
+            <button
+              onClick={() => setShowQuickStart(true)}
+              className="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-white rounded-lg transition-colors"
+            >
+              Quick Start Guide
+            </button>
+            <button
+              onClick={resetToDefaults}
+              className="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-white rounded-lg transition-colors"
+            >
+              Reset to Defaults
+            </button>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div id="report" className="space-y-16">
           {/* Current/Estimated Sales Section */}
           <div className="space-y-8">
             <SectionHeader title="Current/Estimated Sales" />
@@ -275,16 +369,19 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                   key={field.key}
                   label={field.label}
                   value={inputs[field.key]}
-                  onChange={(e) => setInputs({ ...inputs, [field.key]: Number(e.target.value) })}
+                  onChange={(e) => handleInputChange(field.key, e.target.value)}
                   prefix={field.prefix}
                   suffix={field.suffix}
                   tooltipContent={field.tooltipContent}
+                  helperText={field.helperText}
                   min={0}
                   max={field.suffix === "%" ? 100 : undefined}
                   type="number"
                 />
               ))}
             </div>
+
+            {/* Funnel Visualization */}
             <div className="flex justify-between items-center mt-12 overflow-x-auto py-4">
               <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="Clicks" tooltipContent="Total clicks from ads" />
               <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="Leads" tooltipContent="Total leads generated" />
@@ -293,6 +390,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               <FunnelStage value={metrics.proposalsSent} exactValue={metrics.proposalsSent} label="Proposals" tooltipContent="Proposals sent to clients" />
               <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="New Clients" tooltipContent="New clients won" />
             </div>
+            <FunnelVisualization metrics={metrics} />
+
+            {/* Metrics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
               <MetricCard
                 label="Estimated Monthly Revenue"
@@ -308,8 +408,35 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
             </div>
           </div>
-  {/* Client Goals Section */}
-  <div className="space-y-8">
+          {/* New ROI Analysis Section */}
+          <div className="space-y-8">
+            <SectionHeader title="ROI Analysis" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <MetricCard
+                label="Break-even Point"
+                value={`${metrics.breakEvenPoint.toFixed(1)} months`}
+                subtitle="Time to recover investment"
+                tooltipContent="Time needed to recover your marketing investment"
+              />
+              <MetricCard
+                label="Profit Margin"
+                value={`${metrics.profitMargin.toFixed(1)}%`}
+                subtitle="Net profit percentage"
+                tooltipContent="Percentage of revenue that becomes profit"
+              />
+              <MetricCard
+                label="Payback Period"
+                value={`${metrics.paybackPeriod.toFixed(1)} months`}
+                subtitle="Investment recovery"
+                tooltipContent="Time needed to recover total investment"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+        {/* Client Goals Section */}
+          <div className="space-y-8">
             <SectionHeader title="Client Goals" />
             <div className="max-w-lg mb-8">
               <InputField
@@ -349,9 +476,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
               <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={`${metrics.leadToSale.toFixed(1)}%`} // Add % sign
-                subtitle="Of leads become clients" // Updated description
-                tooltipContent="Percentage of leads that convert into paying clients" 
+                value={metrics.leadToSale.toFixed(2)}
+                subtitle="Leads needed per client" 
+                tooltipContent="Number of leads needed to acquire one client" 
               />
             </div>
             <div className="mt-8">
@@ -379,11 +506,11 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <MetricCard 
+              <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={`${metrics.leadToSale.toFixed(1)}%`} // Add % sign
-                subtitle="Of leads become clients" // Updated description
-                tooltipContent="Percentage of leads that convert into paying clients" 
+                value={metrics.leadToSale.toFixed(2)} 
+                subtitle="Leads needed per client" 
+                tooltipContent="Number of leads needed to acquire one client" 
               />
               <MetricCard 
                 label="Required Leads" 
@@ -397,28 +524,24 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 subtitle="Avg leads per day" 
                 tooltipContent="Number of leads you need to generate each day" 
               />
-             <MetricCard 
+              <MetricCard 
                 label="Target Cost Per Lead" 
-                value={metrics.leadToSale > 0 ? 
-                  `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : 
-                   "$0.00"} 
+                value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * metrics.leadToSale).toFixed(2)}` : "$0.00"} 
                 subtitle="Target cost per lead" 
                 tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
               />
-
               <MetricCard 
                 label="Daily Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-                  `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
+                  `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)).toFixed(2)}` : 
                   "$0.00"} 
                 subtitle="Recommended daily spend" 
                 tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
               />
-
               <MetricCard 
                 label="Monthly Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-                  `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
+                  `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)) * 30).toFixed(2)}` : 
                   "$0.00"} 
                 subtitle="Recommended monthly spend" 
                 tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
@@ -426,7 +549,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             </div>
           </div>
         </div>
-      </div>
 
       {/* Footer */}
       <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-primary/20">
@@ -434,34 +556,62 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
           App Built By Xcelerate Digital Systems
         </p>
       </div>
+
+      {/* Quick Start Guide Dialog */}
+      <QuickStartGuide
+        isOpen={showQuickStart}
+        onClose={() => setShowQuickStart(false)}
+      />
     </div>
   );
 };
    // Initial state
-const initialInputState: Inputs = {
-  avgLifetimeValue: 2000,
-  monthlyMarketingBudget: 2000,
-  costPerClick: 4,
-  landingPageConversion: 5,
-  discoveryCallRate: 50,
-  salesCallRate: 50,
-  proposalRate: 50,
-  clientWonRate: 50,
-  targetNewClients: 2,
-  clientSpend: 500,
-};
+    const initialInputState: Inputs = {
+      avgLifetimeValue: 2000,
+      monthlyMarketingBudget: 2000,
+      costPerClick: 4,
+      landingPageConversion: 5,
+      discoveryCallRate: 50,
+      salesCallRate: 50,
+      proposalRate: 50,
+      clientWonRate: 50,
+      targetNewClients: 2,
+      clientSpend: 500,
+    };
 
 // App component
 const App = () => {
-  const [scenarios, setScenarios] = useState<Inputs[]>([initialInputState]);
+  const [scenarios, setScenarios] = useState<Inputs[]>([{
+    ...initialInputState,
+    scenarioName: "Scenario 1"
+  }]);
 
-  const addScenario = () => setScenarios([...scenarios, { ...initialInputState }]);
+  const updateScenario = (index: number, updatedScenario: Inputs) => {
+    const newScenarios = [...scenarios];
+    newScenarios[index] = updatedScenario;
+    setScenarios(newScenarios);
+  };
+
+  const addScenario = () => setScenarios([
+    ...scenarios, 
+    { 
+      ...initialInputState,
+      scenarioName: `Scenario ${scenarios.length + 1}`
+    }
+  ]);
 
   return (
     <div className="bg-background min-h-screen">
-      {scenarios.map((scenario, index) => (
-        <SalesCalculator key={index} inputs={scenario} />
-      ))}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4">
+        {scenarios.map((scenario, index) => (
+          <SalesCalculator 
+            key={index} 
+            inputs={scenario}
+            onUpdateScenario={(updated) => updateScenario(index, updated)}
+            scenarioIndex={index}
+          />
+        ))}
+      </div>
       <button 
         onClick={addScenario} 
         className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg mt-8 mx-auto block font-staatliches transition-colors text-xl"
