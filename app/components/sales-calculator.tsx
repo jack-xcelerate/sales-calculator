@@ -188,7 +188,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
-    const leadToSale = leads > 0 ? newClients / leads : 0;  // Raw ratio, not percentage
+    const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;
 
     setMetrics({
       clicks,
@@ -354,9 +354,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
               <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={metrics.leadToSale.toFixed(2)}
-                subtitle="Leads needed per client" 
-                tooltipContent="Number of leads needed to acquire one client" 
+                value={`${metrics.leadToSale.toFixed(1)}%`} // Add % sign
+                subtitle="Of leads become clients" // Updated description
+                tooltipContent="Percentage of leads that convert into paying clients" 
               />
             </div>
             <div className="mt-8">
@@ -386,9 +386,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard 
                 label="Lead To Sale Ratio" 
-                value={metrics.leadToSale.toFixed(2)} 
-                subtitle="Leads needed per client" 
-                tooltipContent="Number of leads needed to acquire one client" 
+                value={`${metrics.leadToSale.toFixed(1)}%`} // Add % sign
+                subtitle="Of leads become clients" // Updated description
+                tooltipContent="Percentage of leads that convert into paying clients" 
               />
               <MetricCard 
                 label="Required Leads" 
@@ -404,26 +404,28 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
               <MetricCard 
                 label="Target Cost Per Lead" 
-                value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * metrics.leadToSale).toFixed(2)}` : "$0.00"} 
+                value={metrics.leadToSale > 0 ? 
+                `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : 
+                "$0.00"} 
                 subtitle="Target cost per lead" 
                 tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
               />
               <MetricCard 
                 label="Daily Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-                  `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)).toFixed(2)}` : 
-                  "$0.00"} 
+                `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
+                "$0.00"} 
                 subtitle="Recommended daily spend" 
                 tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
               />
               <MetricCard 
                 label="Monthly Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-                  `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)) * 30).toFixed(2)}` : 
-                  "$0.00"} 
+                `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
+                "$0.00"} 
                 subtitle="Recommended monthly spend" 
                 tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
-              />
+                />
             </div>
           </div>
         </div>
