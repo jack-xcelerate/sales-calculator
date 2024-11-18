@@ -202,39 +202,6 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
           </div>
         </div>
 
-        {/* Target Goals Section */}
-        <div>
-          <h4 className="text-xl font-staatliches text-white mb-4">
-            Your Target Growth Goals
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="space-y-1">
-              <div className="text-3xl font-staatliches text-primary">
-                ${Math.round(metrics.estRevenue).toLocaleString()}
-              </div>
-              <div className="text-sm text-white/60">Target Monthly Revenue</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-3xl font-staatliches text-primary">
-                {Math.round(metrics.estLeads)}
-              </div>
-              <div className="text-sm text-white/60">Required Monthly Leads</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-3xl font-staatliches text-primary">
-                {Math.round(metrics.estDiscoveryCalls)}
-              </div>
-              <div className="text-sm text-white/60">Required Consultations</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-3xl font-staatliches text-primary">
-                ${Math.round(metrics.estimatedRevenue / 30).toLocaleString()}
-              </div>
-              <div className="text-sm text-white/60">Required Daily Budget</div>
-            </div>
-          </div>
-        </div>
-
         {/* CTA Button */}
         <div className="space-y-4">
           <button
