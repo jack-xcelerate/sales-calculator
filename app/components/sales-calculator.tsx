@@ -362,88 +362,89 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 subtitle="Of leads become clients"
                 tooltipContent="Percentage of leads that convert into paying clients" 
               />
+            </div>
             <div className="mt-8">
-            <MetricCard 
-            label="Projected Revenue Impact" 
-            value={`$${metrics.estRevenue.toLocaleString()}`} 
-            subtitle="Total lifetime value from target clients" 
-            tooltipContent="Potential revenue from achieving your new client goal" 
-          />
+              <MetricCard 
+                label="Projected Revenue Impact" 
+                value={`$${metrics.estRevenue.toLocaleString()}`} 
+                subtitle="Total lifetime value from target clients" 
+                tooltipContent="Potential revenue from achieving your new client goal" 
+              />
+            </div>
+          </div>
+
+          {/* Budget Planner Section */}
+          <div className="space-y-8">
+            <SectionHeader title="Budget Planner" />
+            <div className="max-w-lg mb-8">
+              <InputField
+                label="Client Acquisition Cost"
+                value={inputs.clientSpend}
+                onChange={(e) => setInputs(prev => ({
+                  ...prev,
+                  clientSpend: Number(e.target.value)
+                }))}
+                prefix="$"
+                tooltipContent="Maximum amount you're willing to spend to acquire one new client"
+              />
+              <p className="mt-2 text-sm text-white/60">
+                Industry benchmark: CAC should be ⅓ or less of Customer Lifetime Value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <MetricCard 
+                label="Lead To Sale Ratio" 
+                value={`${metrics.leadToSale.toFixed(1)}%`}
+                subtitle="Of leads become clients"
+                tooltipContent="Percentage of leads that convert into paying clients" 
+              />
+              <MetricCard 
+                label="Required Leads" 
+                value={metrics.estLeads} 
+                subtitle="Total leads needed" 
+                tooltipContent="Number of leads required to reach your client goal" 
+              />
+              <MetricCard 
+                label="Expected Daily Leads" 
+                value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
+                subtitle="Avg leads per day" 
+                tooltipContent="Number of leads you need to generate each day" 
+              />
+              <MetricCard 
+                label="Target Cost Per Lead" 
+                value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : "$0.00"} 
+                subtitle="Target cost per lead" 
+                tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
+              />
+              <MetricCard 
+                label="Daily Budget" 
+                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
+                `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
+                "$0.00"} 
+                subtitle="Recommended daily spend" 
+                tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
+              />
+              <MetricCard 
+                label="Monthly Budget" 
+                value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
+                `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
+                "$0.00"} 
+                subtitle="Recommended monthly spend" 
+                tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Budget Planner Section */}
-      <div className="space-y-8">
-        <SectionHeader title="Budget Planner" />
-        <div className="max-w-lg mb-8">
-          <InputField
-            label="Client Acquisition Cost"
-            value={inputs.clientSpend}
-            onChange={(e) => setInputs(prev => ({
-              ...prev,
-              clientSpend: Number(e.target.value)
-            }))}
-            prefix="$"
-            tooltipContent="Maximum amount you're willing to spend to acquire one new client"
-          />
-          <p className="mt-2 text-sm text-white/60">
-            Industry benchmark: CAC should be ⅓ or less of Customer Lifetime Value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <MetricCard 
-            label="Lead To Sale Ratio" 
-            value={`${metrics.leadToSale.toFixed(1)}%`}
-            subtitle="Of leads become clients"
-            tooltipContent="Percentage of leads that convert into paying clients" 
-          />
-          <MetricCard 
-            label="Required Leads" 
-            value={metrics.estLeads} 
-            subtitle="Total leads needed" 
-            tooltipContent="Number of leads required to reach your client goal" 
-          />
-          <MetricCard 
-            label="Expected Daily Leads" 
-            value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
-            subtitle="Avg leads per day" 
-            tooltipContent="Number of leads you need to generate each day" 
-          />
-          <MetricCard 
-            label="Target Cost Per Lead" 
-            value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : "$0.00"} 
-            subtitle="Target cost per lead" 
-            tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
-          />
-          <MetricCard 
-            label="Daily Budget" 
-            value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-            `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
-            "$0.00"} 
-            subtitle="Recommended daily spend" 
-            tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
-          />
-          <MetricCard 
-            label="Monthly Budget" 
-            value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
-            `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
-            "$0.00"} 
-            subtitle="Recommended monthly spend" 
-            tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
-          />
-        </div>
+      {/* Footer */}
+      <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-primary/20">
+        <p className="text-center text-white/60 font-alata">
+          App Built By Xcelerate Digital Systems
+        </p>
       </div>
     </div>
-  </div>
-
-  {/* Footer */}
-  <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-primary/20">
-    <p className="text-center text-white/60 font-alata">
-      App Built By Xcelerate Digital Systems
-    </p>
-  </div>
-</div>
-);
+  );
 };
 // Initial state
 const initialInputState: Inputs = {
