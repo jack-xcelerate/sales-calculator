@@ -149,7 +149,7 @@ const SectionHeader = ({ title }: { title: string }) => (
   </div>
 );
 
-// CTA Section Component
+// Updated CTA Section Component
 const CTASection = ({ metrics }: { metrics: Metrics }) => {
   const handleGetGamePlan = () => {
     const resultsToSave = {
@@ -159,7 +159,7 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
       leadsNeeded: Math.round(metrics.estLeads)
     };
     localStorage.setItem('calculatorResults', JSON.stringify(resultsToSave));
-    window.location.href = 'https://xceleratedigitalsystems.com/xds-game-plan';
+    window.location.href = 'https://xceleratedigitalsystems.com/xds-game-plan'; 
   };
 
   return (
@@ -167,40 +167,75 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
       <div className="text-center space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-staatliches text-white">
-            Your Business Growth Potential
+            Your Current Growth Potential
           </h3>
           <p className="text-white/80">
-            Based on your numbers, here's what you could achieve:
+            Based on your numbers, here's what you're on track to achieve:
           </p>
         </div>
 
+        {/* Current Performance Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
               ${Math.round(metrics.estimatedRevenue).toLocaleString()}
             </div>
-            <div className="text-sm text-white/60">Monthly Revenue</div>
+            <div className="text-sm text-white/60">Current Monthly Revenue</div>
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
               {Math.round(metrics.newClients)}
             </div>
-            <div className="text-sm text-white/60">New Clients/Month</div>
+            <div className="text-sm text-white/60">Current Clients/Month</div>
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
               {metrics.roas.toFixed(1)}x
             </div>
-            <div className="text-sm text-white/60">Return on Ad Spend</div>
+            <div className="text-sm text-white/60">Current ROAS</div>
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
-              {Math.round(metrics.estLeads)}
+              {Math.round(metrics.leads)}
             </div>
-            <div className="text-sm text-white/60">Leads Needed</div>
+            <div className="text-sm text-white/60">Current Monthly Leads</div>
           </div>
         </div>
 
+        {/* Target Goals Section */}
+        <div>
+          <h4 className="text-xl font-staatliches text-white mb-4">
+            Your Target Growth Goals
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="space-y-1">
+              <div className="text-3xl font-staatliches text-primary">
+                ${Math.round(metrics.estRevenue).toLocaleString()}
+              </div>
+              <div className="text-sm text-white/60">Target Monthly Revenue</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-3xl font-staatliches text-primary">
+                {Math.round(metrics.estLeads)}
+              </div>
+              <div className="text-sm text-white/60">Required Monthly Leads</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-3xl font-staatliches text-primary">
+                {Math.round(metrics.estDiscoveryCalls)}
+              </div>
+              <div className="text-sm text-white/60">Required Consultations</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-3xl font-staatliches text-primary">
+                ${Math.round(metrics.estimatedRevenue / 30).toLocaleString()}
+              </div>
+              <div className="text-sm text-white/60">Required Daily Budget</div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Button */}
         <div className="space-y-4">
           <button
             onClick={handleGetGamePlan}
@@ -296,7 +331,25 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     leadToSale: 0,
   });
 
-  // Define calculation function
+  // Effect to automatically update clientSpend when avgLifetimeValue changes
+  useEffect(() => {
+    const newCAC = inputs.avgLifetimeValue / 3;
+    // Only update if the user hasn't manually changed the value
+    if (Math.abs(inputs.clientSpend - (inputs.avgLifetimeValue / 3)) > 0.01) {
+      setInputs(prev => ({
+        ...prev,
+        clientSpend: newCAC
+      }));
+    }
+  }, [inputs.avgLifetimeValue]);
+
+  // Load saved inputs on mount
+  useEffect(() => {
+    const savedInputs = localStorage.getItem('calculatorInputs');
+    if (savedInputs) setInputs(JSON.parse(savedInputs));
+  }, []);
+
+  // Calculate metrics function
   const doCalculateMetrics = useCallback(() => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
@@ -330,17 +383,12 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     });
   }, [inputs]);
 
-  // Load saved inputs on mount
-  useEffect(() => {
-    const savedInputs = localStorage.getItem('calculatorInputs');
-    if (savedInputs) setInputs(JSON.parse(savedInputs));
-  }, []);
-
   // Save inputs and recalculate metrics when inputs change
   useEffect(() => {
     localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     doCalculateMetrics();
   }, [inputs, doCalculateMetrics]);
+
   return (
     <div className="min-h-screen p-8">
       {/* Logo Header */}
@@ -455,6 +503,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               />
             </div>
           </div>
+
           {/* Budget Planner Section */}
           <div className="space-y-8">
             <SectionHeader title="Budget Planner" />
@@ -531,7 +580,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     </div>
   );
 };
-
 // Initial state
 const initialInputState: Inputs = {
   avgLifetimeValue: 4500,
@@ -550,7 +598,9 @@ const initialInputState: Inputs = {
 const App = () => {
   const [scenarios, setScenarios] = useState<Inputs[]>([initialInputState]);
   
-  const addScenario = () => setScenarios([...scenarios, { ...initialInputState }]);
+  const addScenario = () => {
+    setScenarios(prev => [...prev, { ...initialInputState }]);
+  };
   
   return (
     <div className="bg-background min-h-screen">
@@ -559,7 +609,8 @@ const App = () => {
       ))}
       <button 
         onClick={addScenario} 
-        className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg mt-8 mx-auto block font-staatliches transition-colors text-xl"
+        className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg mt-8 mx-auto block 
+                 font-staatliches transition-colors text-xl"
       >
         Add Scenario
       </button>
