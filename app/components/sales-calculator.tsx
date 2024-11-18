@@ -411,9 +411,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Number of leads you need to generate each day" 
               />
               <MetricCard 
-                label="Target Cost Per Lead" 
+                label="Max Cost Per Lead" 
                 value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : "$0.00"} 
-                subtitle="Target cost per lead" 
+                subtitle="Max cost per lead to remain profitable" 
                 tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
               />
               <MetricCard 
