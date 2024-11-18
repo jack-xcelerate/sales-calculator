@@ -251,7 +251,12 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     leadToSale: 0,
   });
 
-  // Define calculateMetrics before using it in useEffect
+  useEffect(() => {
+    const savedInputs = localStorage.getItem('calculatorInputs');
+    if (savedInputs) setInputs(JSON.parse(savedInputs));
+  }, []);
+
+  // Define calculateMetrics
   const calculateMetrics = useCallback(() => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
@@ -266,7 +271,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
     const leadToSale = leads > 0 ? (newClients / leads) * 100 : 0;  
-  
+
     setMetrics({
       clicks,
       leads,
@@ -285,16 +290,12 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
     });
   }, [inputs]);
 
-  useEffect(() => {
-    const savedInputs = localStorage.getItem('calculatorInputs');
-    if (savedInputs) setInputs(JSON.parse(savedInputs));
-  }, []);
-
+  // Use calculateMetrics in useEffect
   useEffect(() => {
     localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     calculateMetrics();
   }, [inputs, calculateMetrics]);
-
+  
   const calculateMetrics = useCallback(() => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
