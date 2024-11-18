@@ -1,52 +1,9 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Tooltip } from '@/components/ui/tooltip';
+import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
-import { QuickStartGuide } from '@/components/QuickStartGuide';
-import { FunnelVisualization } from '@/components/FunnelVisualization';
-import { ROIAnalysis } from '@/components/ROIAnalysis';
-import { MetricCard } from '@/components/MetricCard';
-import { SectionHeader } from '@/components/SectionHeader';
 
-// Also, create a types.ts file in your app directory
-import { Metrics, Inputs } from '@/types';
-
-
-// Interfaces
-interface Metrics {
-  clicks: number;
-  leads: number;
-  discoveryCalls: number;
-  salesCalls: number;
-  proposalsSent: number;
-  newClients: number;
-  estimatedRevenue: number;
-  roas: number;
-  estProposals: number;
-  estSalesCalls: number;
-  estDiscoveryCalls: number;
-  estLeads: number;
-  estRevenue: number;
-  leadToSale: number;
-  breakEvenPoint: number;
-  profitMargin: number;
-  paybackPeriod: number;
-}
-
-interface Inputs {
-  avgLifetimeValue: number;
-  monthlyMarketingBudget: number;
-  costPerClick: number;
-  landingPageConversion: number;
-  discoveryCallRate: number;
-  salesCallRate: number;
-  proposalRate: number;
-  clientWonRate: number;
-  targetNewClients: number;
-  clientSpend: number;
-  scenarioName?: string;
-}
 // MetricCard component
 const MetricCard = ({ label, value, subtitle, tooltipContent }: {
   label: string;
@@ -65,7 +22,6 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }: {
     {subtitle && <div className="text-sm font-alata text-white/60">{subtitle}</div>}
   </div>
 );
-
 // InputField component
 const InputField = ({ 
   label, 
@@ -76,8 +32,7 @@ const InputField = ({
   type = 'number', 
   prefix, 
   suffix,
-  tooltipContent,
-  helperText 
+  tooltipContent 
 }: {
   label: string;
   value: number;
@@ -88,7 +43,6 @@ const InputField = ({
   prefix?: string;
   suffix?: string;
   tooltipContent?: string;
-  helperText?: string;
 }) => (
   <div className="mb-8">
     <div className="flex items-center space-x-2 mb-2">
@@ -121,9 +75,6 @@ const InputField = ({
         </span>
       )}
     </div>
-    {helperText && (
-      <p className="mt-2 text-sm text-primary/70">{helperText}</p>
-    )}
     {suffix === "%" && (
       <input
         type="range"
@@ -164,31 +115,38 @@ const SectionHeader = ({ title }: { title: string }) => (
     <div className="h-px bg-primary/20" />
   </div>
 );
-// Initial state definition
-const initialInputState: Inputs = {
-  avgLifetimeValue: 2000,
-  monthlyMarketingBudget: 2000,
-  costPerClick: 4,
-  landingPageConversion: 5,
-  discoveryCallRate: 50,
-  salesCallRate: 50,
-  proposalRate: 50,
-  clientWonRate: 50,
-  targetNewClients: 2,
-  clientSpend: 500,
-};
+interface Metrics {
+  clicks: number;
+  leads: number;
+  discoveryCalls: number;
+  salesCalls: number;
+  proposalsSent: number;
+  newClients: number;
+  estimatedRevenue: number;
+  roas: number;
+  estProposals: number;
+  estSalesCalls: number;
+  estDiscoveryCalls: number;
+  estLeads: number;
+  estRevenue: number;
+  leadToSale: number;
+}
 
-// SalesCalculator Component
-const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioIndex }: { 
-  inputs: Inputs;
-  onUpdateScenario?: (inputs: Inputs) => void;
-  scenarioIndex: number;
-}) => {
-  const [inputs, setInputs] = useState<Inputs>({
-    ...initialInputs,
-    clientSpend: Math.min(initialInputs.avgLifetimeValue / 3, initialInputs.clientSpend)
-  });
-  const [showQuickStart, setShowQuickStart] = useState(false);
+interface Inputs {
+  avgLifetimeValue: number;
+  monthlyMarketingBudget: number;
+  costPerClick: number;
+  landingPageConversion: number;
+  discoveryCallRate: number;
+  salesCallRate: number;
+  proposalRate: number;
+  clientWonRate: number;
+  targetNewClients: number;
+  clientSpend: number;
+}
+
+const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
+  const [inputs, setInputs] = useState<Inputs>(initialInputs);
   const [metrics, setMetrics] = useState<Metrics>({
     clicks: 0,
     leads: 0,
@@ -204,9 +162,6 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
     estLeads: 0,
     estRevenue: 0,
     leadToSale: 0,
-    breakEvenPoint: 0,
-    profitMargin: 0,
-    paybackPeriod: 0
   });
 
   useEffect(() => {
@@ -218,7 +173,6 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
     localStorage.setItem('calculatorInputs', JSON.stringify(inputs));
     calculateMetrics();
   }, [inputs]);
-
   const calculateMetrics = () => {
     const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
     const leads = clicks * (inputs.landingPageConversion / 100);
@@ -229,18 +183,12 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
     const estimatedRevenue = newClients * inputs.avgLifetimeValue;
     const roas = estimatedRevenue / inputs.monthlyMarketingBudget;
 
-    // Reverse calculations
+    // Corrected reverse calculations
     const estProposals = inputs.clientWonRate > 0 ? Math.ceil(inputs.targetNewClients / (inputs.clientWonRate / 100)) : 0;
     const estSalesCalls = inputs.proposalRate > 0 ? Math.ceil(estProposals / (inputs.proposalRate / 100)) : 0;
     const estDiscoveryCalls = inputs.salesCallRate > 0 ? Math.ceil(estSalesCalls / (inputs.salesCallRate / 100)) : 0;
     const estLeads = inputs.discoveryCallRate > 0 ? Math.ceil(estDiscoveryCalls / (inputs.discoveryCallRate / 100)) : 0;
-    const leadToSale = leads > 0 ? newClients / leads : 0;
-
-    // ROI and break-even calculations
-    const monthlyProfit = estimatedRevenue - inputs.monthlyMarketingBudget;
-    const profitMargin = estimatedRevenue > 0 ? (monthlyProfit / estimatedRevenue) * 100 : 0;
-    const breakEvenPoint = monthlyProfit > 0 ? inputs.monthlyMarketingBudget / monthlyProfit : 0;
-    const paybackPeriod = estimatedRevenue > 0 ? inputs.monthlyMarketingBudget / (estimatedRevenue / 12) : 0;
+    const leadToSale = leads > 0 ? newClients / leads : 0;  // Raw ratio, not percentage
 
     setMetrics({
       clicks,
@@ -257,42 +205,7 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
       estLeads,
       estRevenue: inputs.targetNewClients * inputs.avgLifetimeValue,
       leadToSale,
-      breakEvenPoint,
-      profitMargin,
-      paybackPeriod
     });
-  };
-  const handleInputChange = (key: keyof Inputs, value: number | string) => {
-    let updatedInputs = { ...inputs };
-
-    if (key === 'avgLifetimeValue') {
-      const numValue = Number(value);
-      const recommendedClientSpend = numValue / 3;
-      updatedInputs = {
-        ...updatedInputs,
-        [key]: numValue,
-        clientSpend: Math.min(inputs.clientSpend, recommendedClientSpend)
-      };
-    } else if (key === 'clientSpend') {
-      updatedInputs[key] = Math.min(Number(value), inputs.avgLifetimeValue / 3);
-    } else if (key === 'scenarioName') {
-      updatedInputs[key] = value as string;
-    } else {
-      updatedInputs[key] = Number(value);
-    }
-
-    setInputs(updatedInputs);
-    onUpdateScenario?.(updatedInputs);
-  };
-
-  const resetToDefaults = () => {
-    const defaultInputs = {
-      ...initialInputState,
-      scenarioName: `Scenario ${scenarioIndex + 1}`,
-      clientSpend: initialInputState.avgLifetimeValue / 3
-    };
-    setInputs(defaultInputs);
-    onUpdateScenario?.(defaultInputs);
   };
 
   const inputFields = [
@@ -300,14 +213,7 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
       label: "Average Lifetime Value", 
       key: "avgLifetimeValue" as keyof Inputs, 
       prefix: "$",
-      tooltipContent: "The total revenue you expect from a client throughout your entire relationship",
-    },
-    {
-      label: "Client Acquisition Cost",
-      key: "clientSpend" as keyof Inputs,
-      prefix: "$",
-      tooltipContent: "Maximum amount to spend acquiring one client",
-      helperText: `Recommended: Up to $${(inputs.avgLifetimeValue / 3).toFixed(2)} (1/3 of lifetime value)`
+      tooltipContent: "The total revenue you expect to receive from a client throughout your entire relationship" 
     },
     { 
       label: "Monthly Marketing Budget", 
@@ -364,30 +270,6 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
       </div>
 
       <div className="max-w-4xl mx-auto space-y-12">
-        {/* Header Actions */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <input
-            type="text"
-            value={inputs.scenarioName}
-            onChange={(e) => handleInputChange('scenarioName', e.target.value)}
-            className="bg-transparent border-b border-primary/20 px-2 py-1 text-white font-staatliches text-xl focus:outline-none focus:border-primary"
-          />
-          <div className="flex gap-4">
-            <button
-              onClick={() => setShowQuickStart(true)}
-              className="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-white rounded-lg transition-colors"
-            >
-              Quick Start Guide
-            </button>
-            <button
-              onClick={resetToDefaults}
-              className="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-white rounded-lg transition-colors"
-            >
-              Reset to Defaults
-            </button>
-          </div>
-        </div>
-
         <div id="report" className="space-y-16">
           {/* Current/Estimated Sales Section */}
           <div className="space-y-8">
@@ -398,19 +280,16 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
                   key={field.key}
                   label={field.label}
                   value={inputs[field.key]}
-                  onChange={(e) => handleInputChange(field.key, e.target.value)}
+                  onChange={(e) => setInputs({ ...inputs, [field.key]: Number(e.target.value) })}
                   prefix={field.prefix}
                   suffix={field.suffix}
                   tooltipContent={field.tooltipContent}
-                  helperText={field.helperText}
                   min={0}
                   max={field.suffix === "%" ? 100 : undefined}
                   type="number"
                 />
               ))}
             </div>
-
-            {/* Funnel Visualization */}
             <div className="flex justify-between items-center mt-12 overflow-x-auto py-4">
               <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="Clicks" tooltipContent="Total clicks from ads" />
               <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="Leads" tooltipContent="Total leads generated" />
@@ -419,9 +298,6 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
               <FunnelStage value={metrics.proposalsSent} exactValue={metrics.proposalsSent} label="Proposals" tooltipContent="Proposals sent to clients" />
               <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="New Clients" tooltipContent="New clients won" />
             </div>
-            <FunnelVisualization metrics={metrics} />
-
-            {/* Metrics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
               <MetricCard
                 label="Estimated Monthly Revenue"
@@ -437,18 +313,17 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
               />
             </div>
           </div>
-
-          {/* ROI Analysis Section */}
-          <ROIAnalysis metrics={metrics} inputs={inputs} />
-
-          {/* Client Goals Section */}
-          <div className="space-y-8">
+  {/* Client Goals Section */}
+  <div className="space-y-8">
             <SectionHeader title="Client Goals" />
             <div className="max-w-lg mb-8">
               <InputField
                 label="Target New Clients per Month"
                 value={inputs.targetNewClients}
-                onChange={(e) => handleInputChange('targetNewClients', e.target.value)}
+                onChange={(e) => setInputs(prev => ({
+                  ...prev,
+                  targetNewClients: Number(e.target.value)
+                }))}
                 tooltipContent="How many new clients you want to acquire each month"
               />
             </div>
@@ -457,40 +332,89 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
                 label="Required Leads" 
                 value={metrics.estLeads} 
                 subtitle="Total leads needed" 
-                tooltipContent="Number of leads required to reach your client goal" 
+                tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
               />
               <MetricCard 
                 label="Required Discovery Calls" 
                 value={metrics.estDiscoveryCalls} 
                 subtitle={`Based on ${inputs.discoveryCallRate}% call rate`} 
-                tooltipContent="Number of discovery calls needed" 
+                tooltipContent="Number of discovery calls needed to achieve your client goal" 
               />
               <MetricCard 
                 label="Required Sales Calls" 
                 value={metrics.estSalesCalls} 
                 subtitle={`Based on ${inputs.salesCallRate}% rate`} 
-                tooltipContent="Number of sales calls needed" 
+                tooltipContent="Number of sales calls needed to reach your client goal" 
               />
               <MetricCard 
                 label="Required Proposals" 
                 value={metrics.estProposals} 
                 subtitle={`Based on ${inputs.proposalRate}% rate`} 
-                tooltipContent="Number of proposals needed" 
+                tooltipContent="Number of proposals you need to send to reach your client goal" 
+              />
+              <MetricCard 
+                label="Lead To Sale Ratio" 
+                value={metrics.leadToSale.toFixed(2)}
+                subtitle="Leads needed per client" 
+                tooltipContent="Number of leads needed to acquire one client" 
+              />
+            </div>
+            <div className="mt-8">
+              <MetricCard 
+                label="Projected Revenue Impact" 
+                value={`$${metrics.estRevenue.toLocaleString()}`} 
+                subtitle="Total lifetime value from target clients" 
+                tooltipContent="Potential revenue from achieving your new client goal" 
               />
             </div>
           </div>
-
-          {/* Budget Planner Section */}
+               {/* Budget Planner Section */}
           <div className="space-y-8">
             <SectionHeader title="Budget Planner" />
+            <div className="max-w-lg mb-8">
+              <InputField
+                label="Client Acquisition Cost"
+                value={inputs.clientSpend}
+                onChange={(e) => setInputs(prev => ({
+                  ...prev,
+                  clientSpend: Number(e.target.value)
+                }))}
+                prefix="$"
+                tooltipContent="Maximum amount you're willing to spend to acquire one new client"
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <MetricCard 
+                label="Lead To Sale Ratio" 
+                value={metrics.leadToSale.toFixed(2)} 
+                subtitle="Leads needed per client" 
+                tooltipContent="Number of leads needed to acquire one client" 
+              />
+              <MetricCard 
+                label="Required Leads" 
+                value={metrics.estLeads} 
+                subtitle="Total leads needed" 
+                tooltipContent="Number of leads required to reach your client goal" 
+              />
+              <MetricCard 
+                label="Expected Daily Leads" 
+                value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
+                subtitle="Avg leads per day" 
+                tooltipContent="Number of leads you need to generate each day" 
+              />
+              <MetricCard 
+                label="Target Cost Per Lead" 
+                value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * metrics.leadToSale).toFixed(2)}` : "$0.00"} 
+                subtitle="Target cost per lead" 
+                tooltipContent="Maximum amount you should spend to acquire each lead based on lead-to-sale ratio" 
+              />
               <MetricCard 
                 label="Daily Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                   `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)).toFixed(2)}` : 
                   "$0.00"} 
                 subtitle="Recommended daily spend" 
-                tooltipContent="Suggested daily advertising budget" 
+                tooltipContent="Suggested daily advertising budget based on expected daily leads and target cost per lead" 
               />
               <MetricCard 
                 label="Monthly Budget" 
@@ -498,61 +422,47 @@ const SalesCalculator = ({ inputs: initialInputs, onUpdateScenario, scenarioInde
                   `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * metrics.leadToSale)) * 30).toFixed(2)}` : 
                   "$0.00"} 
                 subtitle="Recommended monthly spend" 
-                tooltipContent="Total monthly budget needed" 
+                tooltipContent="Total monthly budget needed to reach your goals based on daily spend" 
               />
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="border-t border-primary/20 pt-8">
-          <p className="text-center text-white/60 font-alata">
-            App Built by Xcelerate Digital Systems
-          </p>
-        </div>
       </div>
 
-      {/* Quick Start Guide Dialog */}
-      <QuickStartGuide
-        isOpen={showQuickStart}
-        onClose={() => setShowQuickStart(false)}
-      />
+      {/* Footer */}
+      <div className="max-w-4xl mx-auto mt-16 pt-8 border-t border-primary/20">
+        <p className="text-center text-white/60 font-alata">
+          App Built By Xcelerate Digital Systems
+        </p>
+      </div>
     </div>
   );
 };
+   // Initial state
+const initialInputState: Inputs = {
+  avgLifetimeValue: 2000,
+  monthlyMarketingBudget: 2000,
+  costPerClick: 4,
+  landingPageConversion: 5,
+  discoveryCallRate: 50,
+  salesCallRate: 50,
+  proposalRate: 50,
+  clientWonRate: 50,
+  targetNewClients: 2,
+  clientSpend: 500,
+};
+
 // App component
 const App = () => {
-  const [scenarios, setScenarios] = useState<Inputs[]>([{
-    ...initialInputState,
-    scenarioName: "Scenario 1"
-  }]);
+  const [scenarios, setScenarios] = useState<Inputs[]>([initialInputState]);
 
-  const updateScenario = (index: number, updatedScenario: Inputs) => {
-    const newScenarios = [...scenarios];
-    newScenarios[index] = updatedScenario;
-    setScenarios(newScenarios);
-  };
-
-  const addScenario = () => setScenarios([
-    ...scenarios, 
-    { 
-      ...initialInputState,
-      scenarioName: `Scenario ${scenarios.length + 1}`
-    }
-  ]);
+  const addScenario = () => setScenarios([...scenarios, { ...initialInputState }]);
 
   return (
     <div className="bg-background min-h-screen">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4">
-        {scenarios.map((scenario, index) => (
-          <SalesCalculator 
-            key={index} 
-            inputs={scenario}
-            onUpdateScenario={(updated) => updateScenario(index, updated)}
-            scenarioIndex={index}
-          />
-        ))}
-      </div>
+      {scenarios.map((scenario, index) => (
+        <SalesCalculator key={index} inputs={scenario} />
+      ))}
       <button 
         onClick={addScenario} 
         className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg mt-8 mx-auto block font-staatliches transition-colors text-xl"
