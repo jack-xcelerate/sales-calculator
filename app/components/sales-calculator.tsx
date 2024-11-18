@@ -486,7 +486,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Maximum amount you're willing to spend to acquire one new client"
               />
               <p className="mt-2 text-sm text-white/60">
-                Industry benchmark: Your cost to win a client should be no more than &frac13; of their total value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
+                Industry benchmark: Your cost to win a client should be no more than ⅓; of their total value (${(inputs.avgLifetimeValue / 3).toFixed(2)})
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
