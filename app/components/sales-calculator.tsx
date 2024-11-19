@@ -433,7 +433,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               <MetricCard 
                 label="Required Leads" 
                 value={metrics.estLeads} 
-                subtitle="Leads Required To Hit # Client Target" 
+                subtitle={`Leads required to hit ${inputs.targetNewClients} clients`}
                 tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
               />
               <MetricCard 
@@ -505,7 +505,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               <MetricCard 
                 label="Average Daily Leads Needed" 
                 value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
-                subtitle="Average Daily Leads Needed To Hit # Client Target" 
+                subtitle={`Average daily leads required to achieve ${inputs.targetNewClients} clients`}
                 tooltipContent="Number of leads you need to generate each day" 
               />
               <MetricCard 
@@ -519,7 +519,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Recommended daily ad budget to hit # Client Target" 
+                subtitle={`Reccomended Daily budget needed to reach ${inputs.targetNewClients} clients`}
                 tooltipContent="Suggested daily advertising budget to achieve your goals" 
               />
               <MetricCard 
@@ -527,7 +527,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Suggested Total monthly investment needed to Hit # Clients" 
+                subtitle={`Total monthly budget needed for ${inputs.targetNewClients} clients`}
                 tooltipContent="Total monthly budget required to achieve your client acquisition goals" 
               />
             </div>
