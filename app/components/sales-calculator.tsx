@@ -439,19 +439,19 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               <MetricCard 
                 label="Consultations Needed" 
                 value={metrics.estDiscoveryCalls} 
-                subtitle={`Based on ${inputs.discoveryCallRate}% booking rate`} 
+                subtitle={`Based on ${inputs.discoveryCallRate}% Consult rate`} 
                 tooltipContent="The number of consultations you need to book to hit your monthly new client goal." 
               />
               <MetricCard 
                 label="Sales Calls Needed" 
                 value={metrics.estSalesCalls} 
-                subtitle={`Based on ${inputs.salesCallRate}% rate`} 
+                subtitle={`Based on ${inputs.salesCallRate}% sales call rate`} 
                 tooltipContent="The number of sales calls or follow-ups required to move clients closer to a decision." 
               />
               <MetricCard 
                 label="Quotes/Proposals Needed" 
                 value={metrics.estProposals} 
-                subtitle={`Based on ${inputs.proposalRate}% rate`} 
+                subtitle={`Based on ${inputs.proposalRate}% quote/proposal rate`} 
                 tooltipContent="The number of proposals/quotes you need to send to convert prospects into paying clients." 
               />
               <MetricCard 
