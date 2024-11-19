@@ -461,14 +461,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Your success rate at converting leads to clients" 
               />
             </div>
-            <div className="mt-8">
-              <MetricCard 
-                label="Projected Revenue Impact" 
-                value={`$${metrics.estRevenue.toLocaleString()}`} 
-                subtitle="Total lifetime value from target clients" 
-                tooltipContent="Potential revenue from achieving your new client goal" 
-              />
-            </div>
           </div>
 
           {/* Budget Planner Section */}
