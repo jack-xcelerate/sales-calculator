@@ -200,11 +200,12 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
             </div>
             <div className="text-sm text-white/60">Lead To Sale Ratio</div>
           </div>
-          <p className="text-white/80">
+        </div>
+        <div>
+        <p className="text-white/80">
           Unlock predictable growth for your business! Even a 10% improvement in your conversion rates can significantly increase your revenue—all without spending more on marketing. Book a time with us and see how small changes can drive consistent, measurable results.
           </p>
-        </div>
-
+          </div>
         {/* CTA Button */}
         <div className="space-y-4">
           <button
