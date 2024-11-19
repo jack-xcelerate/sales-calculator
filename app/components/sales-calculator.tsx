@@ -263,19 +263,19 @@ const inputFields = [
     label: "Follow-up Meeting Rate", 
     key: "salesCallRate" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "Percentage of discovery calls that progress to sales calls" 
+    tooltipContent: "Percentage of initial calls that progress to a sales/ follow-up call" 
   },
   { 
     label: "Quote/Proposal Rate", 
     key: "proposalRate" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "How many follow-up meetings result in sending a quote" 
+    tooltipContent: "How many follow-up meetings result in sending a quote or proposal" 
   },
   { 
     label: "Win Rate", 
     key: "clientWonRate" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "How many quotes turn into paying clients" 
+    tooltipContent: "How many quotes/proposals turn into paying clients" 
   },
 ];
 
@@ -433,7 +433,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               <MetricCard 
                 label="Required Leads" 
                 value={metrics.estLeads} 
-                subtitle="Total leads needed" 
+                subtitle="Leads Required To Hit # Client Target" 
                 tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
               />
               <MetricCard 
@@ -503,9 +503,9 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 tooltipContent="Number of leads required to reach your client goal" 
               />
               <MetricCard 
-                label="Expected Daily Leads" 
+                label="Average Daily Leads Needed" 
                 value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
-                subtitle="Avg leads per day" 
+                subtitle="Average Daily Leads Needed To Hit # Client Target" 
                 tooltipContent="Number of leads you need to generate each day" 
               />
               <MetricCard 
@@ -519,7 +519,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Recommended daily ad spend" 
+                subtitle="Recommended daily ad budget to hit # Client Target" 
                 tooltipContent="Suggested daily advertising budget to achieve your goals" 
               />
               <MetricCard 
@@ -527,7 +527,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
                 "$0.00"} 
-                subtitle="Total monthly investment needed" 
+                subtitle="Suggested Total monthly investment needed to Hit # Clients" 
                 tooltipContent="Total monthly budget required to achieve your client acquisition goals" 
               />
             </div>
