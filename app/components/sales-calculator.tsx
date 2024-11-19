@@ -431,34 +431,34 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard 
-                label="Required Leads" 
+                label="Estimated Leads Needed" 
                 value={metrics.estLeads} 
                 subtitle={`Leads required to hit ${inputs.targetNewClients} clients`}
                 tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
               />
               <MetricCard 
-                label="Required Initial Consults" 
+                label="Estimated Initial Consults" 
                 value={metrics.estDiscoveryCalls} 
                 subtitle={`Based on ${inputs.discoveryCallRate}% booking rate`} 
                 tooltipContent="Number of initial consultations needed" 
               />
               <MetricCard 
-                label="Required Follow-ups" 
+                label="Estimated Follow-ups" 
                 value={metrics.estSalesCalls} 
                 subtitle={`Based on ${inputs.salesCallRate}% rate`} 
                 tooltipContent="Number of follow-up meetings needed" 
               />
               <MetricCard 
-                label="Required Quotes" 
+                label="Estimated Quotes" 
                 value={metrics.estProposals} 
                 subtitle={`Based on ${inputs.proposalRate}% rate`} 
                 tooltipContent="Number of quotes you need to send" 
               />
               <MetricCard 
-                label="Lead To Client Ratio" 
+                label="Lead To Sale Ratio" 
                 value={`${metrics.leadToSale.toFixed(1)}%`}
-                subtitle="Of leads become clients"
-                tooltipContent="Your success rate at converting leads to clients" 
+                subtitle="The estimated ratio of leads who'll become clients"
+                tooltipContent="Aiming for around 20% is best" 
               />
             </div>
           </div>
@@ -482,18 +482,6 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <MetricCard 
-                label="Lead To Sale Ratio" 
-                value={`${metrics.leadToSale.toFixed(1)}%`}
-                subtitle="Of leads become clients"
-                tooltipContent="Percentage of leads that convert into paying clients" 
-              />
-              <MetricCard 
-                label="Required Leads" 
-                value={metrics.estLeads} 
-                subtitle="Total leads needed" 
-                tooltipContent="Number of leads required to reach your client goal" 
-              />
               <MetricCard 
                 label="Average Daily Leads Needed" 
                 value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
