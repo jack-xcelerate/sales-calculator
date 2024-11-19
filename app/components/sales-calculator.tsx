@@ -230,52 +230,52 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
 };
 const inputFields = [
   { 
-    label: "Average Client Value (LTV)", 
+    label: "Average Client Lifetime Value", 
     key: "avgLifetimeValue" as keyof Inputs, 
     prefix: "$",
-    tooltipContent: "How much revenue you expect to make from each client over your entire relationship" 
+    tooltipContent: "The total revenue you expect to earn from a client over the entire time they remain your customer." 
   },
   { 
-    label: "Monthly Marketing Budget", 
+    label: "Monthly Ad Spend", 
     key: "monthlyMarketingBudget" as keyof Inputs, 
     prefix: "$",
-    tooltipContent: "How much you plan to spend on advertising each month" 
+    tooltipContent: "The total amount you plan to invest in advertising and lead generation each month." 
   },
   { 
-    label: "Cost Per Click (CPC)", 
+    label: "Average Cost Per Click (CPC)", 
     key: "costPerClick" as keyof Inputs, 
     prefix: "$",
-    tooltipContent: "Average amount you pay for each click on your ads" 
+    tooltipContent: "The average cost you pay for each click on your ads (e.g., from Google or Facebook)." 
   },
   { 
-    label: "Online Conversion Rate", 
+    label: "Landing Page Conversion Rate", 
     key: "landingPageConversion" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "Percentage of visitors who become leads by filling out your form" 
+    tooltipContent: "The percentage of visitors to your landing page who fill out a form or take a desired action to become leads." 
   },
   { 
-    label: "Initial Consultation Rate", 
+    label: "Initial Consultation Booking Rate", 
     key: "discoveryCallRate" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "How many enquiries lead to an initial consultation" 
+    tooltipContent: "The percentage of leads who schedule an initial consultation or pick up the call" 
   },
   { 
-    label: "Follow-up Meeting Rate", 
+    label: "Sales Call Rate", 
     key: "salesCallRate" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "Percentage of initial calls that progress to a sales/ follow-up call" 
+    tooltipContent: "The percentage of consultations that move forward to a follow-up sales or proposal meeting." 
   },
   { 
     label: "Quote/Proposal Rate", 
     key: "proposalRate" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "How many follow-up meetings result in sending a quote or proposal" 
+    tooltipContent: "The percentage of follow-up meetings that result in sending a proposal or quote." 
   },
   { 
-    label: "Win Rate", 
+    label: "Client Conversion Rate", 
     key: "clientWonRate" as keyof Inputs, 
     suffix: "%",
-    tooltipContent: "How many quotes/proposals turn into paying clients" 
+    tooltipContent: "The percentage of proposals that turn into paying clients." 
   },
 ];
 
@@ -431,28 +431,28 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <MetricCard 
-                label="Estimated Leads Needed" 
+                label="Total Leads Required" 
                 value={metrics.estLeads} 
                 subtitle={`Leads required to hit ${inputs.targetNewClients} clients`}
-                tooltipContent="Number of leads required to reach your client goal based on current conversion rates" 
+                tooltipContent="The total number of leads needed to achieve your monthly new client goal, based on current conversion rates." 
               />
               <MetricCard 
-                label="Estimated Initial Consults" 
+                label="Consultations Needed" 
                 value={metrics.estDiscoveryCalls} 
                 subtitle={`Based on ${inputs.discoveryCallRate}% booking rate`} 
-                tooltipContent="Number of initial consultations needed" 
+                tooltipContent="The number of consultations you need to book to hit your monthly new client goal." 
               />
               <MetricCard 
-                label="Estimated Follow-ups" 
+                label="Sales Calls Needed" 
                 value={metrics.estSalesCalls} 
                 subtitle={`Based on ${inputs.salesCallRate}% rate`} 
-                tooltipContent="Number of follow-up meetings needed" 
+                tooltipContent="The number of sales calls or follow-ups required to move clients closer to a decision." 
               />
               <MetricCard 
-                label="Estimated Quotes" 
+                label="Quotes/Proposals Needed" 
                 value={metrics.estProposals} 
                 subtitle={`Based on ${inputs.proposalRate}% rate`} 
-                tooltipContent="Number of quotes you need to send" 
+                tooltipContent="The number of proposals/quotes you need to send to convert prospects into paying clients." 
               />
               <MetricCard 
                 label="Lead To Sale Ratio" 
@@ -486,29 +486,29 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 label="Average Daily Leads Needed" 
                 value={metrics.estLeads > 0 ? Math.ceil(metrics.estLeads / 30) : 0} 
                 subtitle={`Average daily leads required to achieve ${inputs.targetNewClients} clients`}
-                tooltipContent="Number of leads you need to generate each day" 
+                tooltipContent="The average number of leads you need to generate each day to meet your monthly new client goal." 
               />
               <MetricCard 
-                label="Max Cost Per Lead" 
+                label="Maximum Cost Per Lead" 
                 value={metrics.leadToSale > 0 ? `$${(inputs.clientSpend * (metrics.leadToSale / 100)).toFixed(2)}` : "$0.00"} 
                 subtitle="Maximum cost per lead to stay profitable" 
-                tooltipContent="Maximum amount you can spend per lead while maintaining profitability" 
+                tooltipContent="The highest amount you can spend per lead while staying profitable, based on your client lifetime value and goals." 
               />
               <MetricCard 
-                label="Suggested Daily Budget" 
+                label="Daily Ad Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))).toFixed(2)}` : 
                 "$0.00"} 
                 subtitle={`Reccomended Daily budget needed to reach ${inputs.targetNewClients} clients`}
-                tooltipContent="Suggested daily advertising budget to achieve your goals" 
+                tooltipContent="The suggested daily amount to spend on ads to achieve your monthly client acquisition goal." 
               />
               <MetricCard 
-                label="Monthly Budget Required" 
+                label="Total Monthly Ad Budget" 
                 value={metrics.leadToSale > 0 && metrics.estLeads > 0 ? 
                 `$${(((Math.ceil(metrics.estLeads / 30)) * (inputs.clientSpend * (metrics.leadToSale / 100))) * 30).toFixed(2)}` : 
                 "$0.00"} 
                 subtitle={`Total monthly budget needed for ${inputs.targetNewClients} clients`}
-                tooltipContent="Total monthly budget required to achieve your client acquisition goals" 
+                tooltipContent="The total monthly budget required to generate enough leads and achieve your monthly client goal." 
               />
             </div>
           </div>
