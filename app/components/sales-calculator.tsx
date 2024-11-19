@@ -196,7 +196,7 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
-              {Math.round(metrics.leadToSale)}
+              {metrics.leadToSale.toFixed(1)}%
             </div>
             <div className="text-sm text-white/60">Lead To Sale Ratio</div>
           </div>
