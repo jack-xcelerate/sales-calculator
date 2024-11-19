@@ -180,25 +180,25 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
             <div className="text-3xl font-staatliches text-primary">
               ${Math.round(metrics.estimatedRevenue).toLocaleString()}
             </div>
-            <div className="text-sm text-white/60">Current Monthly Revenue</div>
+            <div className="text-sm text-white/60">Monthly Revenue</div>
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
               {Math.round(metrics.newClients)}
             </div>
-            <div className="text-sm text-white/60">Current Clients/Month</div>
+            <div className="text-sm text-white/60">New Clients Per Month</div>
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
               {metrics.roas.toFixed(1)}x
             </div>
-            <div className="text-sm text-white/60">Current ROAS</div>
+            <div className="text-sm text-white/60">Estimated Return/ROAS</div>
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-primary">
-              {Math.round(metrics.leads)}
+              {Math.round(metrics.leadToSale)}
             </div>
-            <div className="text-sm text-white/60">Current Monthly Leads</div>
+            <div className="text-sm text-white/60">Lead To Sale Ratio</div>
           </div>
         </div>
 
@@ -210,17 +210,17 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
                      font-staatliches text-xl transition-all transform hover:scale-105
                      shadow-lg hover:shadow-xl"
           >
-            Get Your Free XDS Game Plan →
+            Get Your Free 30-Min XDS Game Plan →
           </button>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/60">
             <span className="flex items-center">
-              <span className="text-primary mr-1">✓</span> Customised Strategy
+              <span className="text-primary mr-1">✓</span> Tailored Strategy
             </span>
             <span className="flex items-center">
               <span className="text-primary mr-1">✓</span> Implementation Timeline
             </span>
             <span className="flex items-center">
-              <span className="text-primary mr-1">✓</span> ROI Projection
+              <span className="text-primary mr-1">✓</span> Growth Projection
             </span>
           </div>
         </div>
@@ -374,7 +374,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
         <div id="report" className="space-y-16">
           {/* Current/Estimated Sales Section */}
           <div className="space-y-8">
-            <SectionHeader title="Current/Estimated Sales" />
+            <SectionHeader title="Your Current/Estimated Marketing" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {inputFields.map((field) => (
                 <InputField
@@ -417,7 +417,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
 
           {/* Client Goals Section */}
           <div className="space-y-8">
-            <SectionHeader title="Client Goals" />
+            <SectionHeader title="New Goals" />
             <div className="max-w-lg mb-8">
               <InputField
                 label="Target New Clients per Month"
@@ -465,7 +465,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
 
           {/* Budget Planner Section */}
           <div className="space-y-8">
-            <SectionHeader title="Budget Planner" />
+            <SectionHeader title="New Estimated Budget" />
             <div className="max-w-lg mb-8">
               <InputField
                 label="Max Cost to Win a Client"
