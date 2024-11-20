@@ -396,13 +396,14 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               ))}
             </div>
             <div className="flex flex-wrap items-center mt-12 py-4">
-              <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="Clicks" tooltipContent="Total clicks from ads" />
-              <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="Leads" tooltipContent="Total leads generated" />
-              <FunnelStage value={metrics.discoveryCalls} exactValue={metrics.discoveryCalls} label="Initial Consults" tooltipContent="Initial consultations scheduled" />
-              <FunnelStage value={metrics.salesCalls} exactValue={metrics.salesCalls} label="Follow-ups" tooltipContent="Follow-up meetings held" />
-              <FunnelStage value={metrics.proposalsSent} exactValue={metrics.proposalsSent} label="Quotes" tooltipContent="Quotes sent to prospects" />
-              <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="New Clients" tooltipContent="New clients won" />
-            </div>
+  <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="Clicks" tooltipContent="Total clicks from ads" />
+  <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="Leads" tooltipContent="Total leads generated" />
+  <FunnelStage value={metrics.discoveryCalls} exactValue={metrics.discoveryCalls} label="Initial Consults" tooltipContent="Initial consultations scheduled" />
+  <FunnelStage value={metrics.salesCalls} exactValue={metrics.salesCalls} label="Follow-ups" tooltipContent="Follow-up meetings held" />
+  <FunnelStage value={metrics.proposalsSent} exactValue={metrics.proposalsSent} label="Quotes" tooltipContent="Quotes sent to prospects" />
+  <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="New Clients" tooltipContent="New clients won" />
+</div>
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
               <MetricCard
