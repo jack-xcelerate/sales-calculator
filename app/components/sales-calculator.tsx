@@ -304,7 +304,7 @@ const inputFields = [
     tooltipContent: "The percentage of proposals that turn into paying clients." 
   },
 ];
-const FunnelVisualization = ({ metrics }: { metrics: Metrics }) => {
+const FunnelVisualization = ({ metrics, inputs }: { metrics: Metrics; inputs: Inputs }) => {
   const stages = [
     { label: "Leads", value: metrics.leads, icon: "👤" },
     { label: "Initial Consults", value: metrics.discoveryCalls, icon: "📞" },
@@ -324,7 +324,7 @@ const FunnelVisualization = ({ metrics }: { metrics: Metrics }) => {
         {stages.map((stage, index) => {
           const percentage =
             index === 0
-              ? 100 // Leads are always 100% as the starting point.
+              ? null // Leads are the starting point; instead, we'll show CPC and landing page conversion.
               : ((stage.value / stages[index - 1].value) * 100).toFixed(1); // Calculate conversion rate.
 
           return (
@@ -344,7 +344,13 @@ const FunnelVisualization = ({ metrics }: { metrics: Metrics }) => {
                   width: `${(stage.value / maxStageValue) * 100}%`,
                 }}
               />
-              <span className="text-xs text-white/70">{percentage}% conversion</span>
+              {index === 0 ? ( // Special case for "Leads"
+                <span className="text-xs text-white/70">
+                  ${inputs.costPerClick.toFixed(2)} CPC | {inputs.landingPageConversion}% Landing Page Conversion
+                </span>
+              ) : (
+                <span className="text-xs text-white/70">{percentage}% conversion</span>
+              )}
             </div>
           );
         })}
@@ -352,6 +358,7 @@ const FunnelVisualization = ({ metrics }: { metrics: Metrics }) => {
     </div>
   );
 };
+
 
 
 const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
@@ -490,7 +497,7 @@ useEffect(() => {
               />
             </div>
             {/* Funnel Visualization */}
-        <FunnelVisualization metrics={metrics} />
+            <FunnelVisualization metrics={metrics} inputs={inputs} />
           </div>
 
           {/* Client Goals Section */}
