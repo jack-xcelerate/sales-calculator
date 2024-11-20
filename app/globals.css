@@ -68,6 +68,28 @@ input:focus {
   gap: 1rem; /* Add spacing between items */
   justify-content: space-between;
 }
+.funnel-visualization {
+  padding: 20px;
+  border-radius: 12px;
+  background: linear-gradient(to bottom, #1e293b, #334155);
+}
+
+.stage-bar {
+  height: 6px;
+  background: linear-gradient(to right, #ff8c42, #ffa500);
+  border-radius: 6px;
+}
+
+.stage-label {
+  font-size: 14px;
+  color: #f9fafb;
+}
+
+.stage-percentage {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
 
 @media (max-width: 768px) {
   .flex-wrap {

@@ -306,32 +306,48 @@ const inputFields = [
 ];
 const FunnelVisualization = ({ metrics }: { metrics: Metrics }) => {
   const stages = [
-    { label: "Leads", value: metrics.leads },
-    { label: "Initial Consults", value: metrics.discoveryCalls },
-    { label: "Sales Calls", value: metrics.salesCalls },
-    { label: "Proposals", value: metrics.proposalsSent },
-    { label: "New Clients", value: metrics.newClients },
+    { label: "Leads", value: metrics.leads, icon: "👤" },
+    { label: "Initial Consults", value: metrics.discoveryCalls, icon: "📞" },
+    { label: "Sales Calls", value: metrics.salesCalls, icon: "🗣️" },
+    { label: "Proposals", value: metrics.proposalsSent, icon: "📄" },
+    { label: "New Clients", value: metrics.newClients, icon: "✅" },
   ];
 
+  const maxStageValue = Math.max(...stages.map((stage) => stage.value)); // Normalize values by the highest stage value.
+
   return (
-    <div className="funnel-visualization bg-background/50 p-6 rounded-xl">
-      <h3 className="text-2xl font-staatliches text-primary mb-6">Marketing Funnel</h3>
-      <div className="funnel-container space-y-4">
-        {stages.map((stage, index) => (
-          <div key={index} className="funnel-stage flex items-center justify-between">
-            <div className="stage-label text-sm font-alata text-white">{stage.label}</div>
-            <div
-              className="stage-bar bg-primary h-6 rounded-md"
-              style={{
-                width: `${(stage.value / metrics.leads) * 100}%`, // Normalize by Leads
-                maxWidth: "100%", // Ensure it doesn't overflow
-              }}
-            ></div>
-            <div className="stage-value text-sm font-alata text-primary">
-              {Math.round(stage.value).toLocaleString()}
+    <div className="funnel-visualization bg-gradient-to-b from-gray-900 to-gray-800 p-8 rounded-xl">
+      <h3 className="text-2xl font-staatliches text-primary mb-6 underline decoration-orange-400">
+        Marketing Funnel
+      </h3>
+      <div className="space-y-6">
+        {stages.map((stage, index) => {
+          const percentage =
+            index === 0
+              ? 100 // Leads are always 100% as the starting point.
+              : ((stage.value / stages[index - 1].value) * 100).toFixed(1); // Calculate conversion rate.
+
+          return (
+            <div key={index} className="flex flex-col items-center space-y-2">
+              <div className="flex items-center justify-between w-full">
+                <span className="text-sm text-white flex items-center space-x-2">
+                  <span>{stage.icon}</span>
+                  <span>{stage.label}</span>
+                </span>
+                <span className="text-sm text-orange-400">
+                  {Math.round(stage.value).toLocaleString()}
+                </span>
+              </div>
+              <div
+                className="h-6 bg-gradient-to-r from-orange-400 to-orange-600 rounded-md"
+                style={{
+                  width: `${(stage.value / maxStageValue) * 100}%`,
+                }}
+              />
+              <span className="text-xs text-white/70">{percentage}% conversion</span>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
