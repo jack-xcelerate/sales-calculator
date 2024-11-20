@@ -304,6 +304,39 @@ const inputFields = [
     tooltipContent: "The percentage of proposals that turn into paying clients." 
   },
 ];
+const FunnelVisualization = ({ metrics }: { metrics: Metrics }) => {
+  const stages = [
+    { label: "Leads", value: metrics.leads },
+    { label: "Initial Consults", value: metrics.discoveryCalls },
+    { label: "Sales Calls", value: metrics.salesCalls },
+    { label: "Proposals", value: metrics.proposalsSent },
+    { label: "New Clients", value: metrics.newClients },
+  ];
+
+  return (
+    <div className="funnel-visualization bg-background/50 p-6 rounded-xl">
+      <h3 className="text-2xl font-staatliches text-primary mb-6">Marketing Funnel</h3>
+      <div className="funnel-container space-y-4">
+        {stages.map((stage, index) => (
+          <div key={index} className="funnel-stage flex items-center justify-between">
+            <div className="stage-label text-sm font-alata text-white">{stage.label}</div>
+            <div
+              className="stage-bar bg-primary h-6 rounded-md"
+              style={{
+                width: `${(stage.value / metrics.leads) * 100}%`, // Normalize by Leads
+                maxWidth: "100%", // Ensure it doesn't overflow
+              }}
+            ></div>
+            <div className="stage-value text-sm font-alata text-primary">
+              {Math.round(stage.value).toLocaleString()}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 
 const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
   const [inputs, setInputs] = useState<Inputs>(initialInputs);
@@ -440,6 +473,8 @@ useEffect(() => {
                 tooltipContent="Return on advertising investment"
               />
             </div>
+            {/* Funnel Visualization */}
+        <FunnelVisualization metrics={metrics} />
           </div>
 
           {/* Client Goals Section */}
