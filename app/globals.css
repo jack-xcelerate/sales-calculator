@@ -84,6 +84,9 @@ input:focus {
 .funnel-stage-circle {
   margin: 0 auto; /* Center the circle */
 }
+.funnel-stage-circle {
+  @apply w-20 h-20; /* Slightly smaller circles for mobile */
+}
 }
 
 
@@ -101,12 +104,12 @@ input:focus {
 }
 
 .funnel-stage-circle {
-  @apply w-20 h-20 rounded-full border border-primary/30 hover:border-primary 
+  @apply w-24 h-24 rounded-full border border-primary/30 hover:border-primary 
          flex flex-col items-center justify-center bg-background/50 transition-all duration-200;
 }
 
 .funnel-stage-circle:hover {
-  @apply shadow-lg shadow-primary/10;
+  @apply shadow-lg shadow-primary/10 scale-105;
 }
 
 /* Section Styles */
