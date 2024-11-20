@@ -55,7 +55,7 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }: {
     {subtitle && <div className="text-sm font-alata text-white/60">{subtitle}</div>}
   </div>
 );
-// Input Field Component
+
 // Input Field Component
 const InputField = ({ 
   label, 
@@ -63,7 +63,6 @@ const InputField = ({
   onChange, 
   min = 0, 
   max = 100, 
-  type = 'number', 
   prefix, 
   suffix,
   tooltipContent 
@@ -73,7 +72,6 @@ const InputField = ({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   min?: number;
   max?: number;
-  type?: string;
   prefix?: string;
   suffix?: string;
   tooltipContent?: string;
@@ -114,7 +112,7 @@ const InputField = ({
       </div>
       <div className="relative">
         <input
-          type="text" // Changed from "number" to "text"
+          type="text"
           value={localValue}
           onChange={handleChange}
           className={`w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
@@ -327,16 +325,16 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
   });
 
   // Effect to automatically update clientSpend when avgLifetimeValue changes
-  useEffect(() => {
-    const newCAC = Number((inputs.avgLifetimeValue / 3).toFixed(2)); // Format to 2 decimal places
-    // Only update if the user hasn't manually changed the value
-    if (Math.abs(inputs.clientSpend - (inputs.avgLifetimeValue / 3)) > 0.01) {
-      setInputs(prev => ({
-        ...prev,
-        clientSpend: newCAC
-      }));
-    }
-  }, [inputs.avgLifetimeValue]);
+useEffect(() => {
+  const newCAC = Number((inputs.avgLifetimeValue / 3).toFixed(2));
+  // Only update if the user hasn't manually changed the value
+  if (Math.abs(inputs.clientSpend - (inputs.avgLifetimeValue / 3)) > 0.01) {
+    setInputs(prev => ({
+      ...prev,
+      clientSpend: newCAC
+    }));
+  }
+}, [inputs.avgLifetimeValue, inputs.clientSpend]); // Added inputs.clientSpend to dependencies
 
   // Load saved inputs on mount
   useEffect(() => {
@@ -404,20 +402,19 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
           <div className="space-y-8">
             <SectionHeader title="Your Current/Estimated Marketing" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {inputFields.map((field) => (
-                <InputField
-                  key={field.key}
-                  label={field.label}
-                  value={inputs[field.key]}
-                  onChange={(e) => setInputs({ ...inputs, [field.key]: Number(e.target.value) })}
-                  prefix={field.prefix}
-                  suffix={field.suffix}
-                  tooltipContent={field.tooltipContent}
-                  min={0}
-                  max={field.suffix === "%" ? 100 : undefined}
-                  type="number"
-                />
-              ))}
+            {inputFields.map((field) => (
+  <InputField
+    key={field.key}
+    label={field.label}
+    value={inputs[field.key]}
+    onChange={(e) => setInputs({ ...inputs, [field.key]: Number(e.target.value) })}
+    prefix={field.prefix}
+    suffix={field.suffix}
+    tooltipContent={field.tooltipContent}
+    min={0}
+    max={field.suffix === "%" ? 100 : undefined}
+  />
+))}
             </div>
             <div className="flex flex-wrap items-center mt-12 py-4">
   <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="Clicks" tooltipContent="Total clicks from ads" />
