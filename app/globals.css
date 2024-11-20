@@ -62,12 +62,14 @@ input:focus {
   border-color: #ff6700;
   box-shadow: 0 0 0 2px rgba(255, 103, 0, 0.2);
 }
+
 .flex-wrap {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem; /* Add spacing between items */
   justify-content: space-between;
 }
+
 .funnel-visualization {
   padding: 20px;
   border-radius: 12px;
@@ -90,6 +92,12 @@ input:focus {
   color: #cbd5e1;
 }
 
+.funnel-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically for mobile */
+  gap: 16px; /* Add spacing between stages */
+}
+
 
 @media (max-width: 768px) {
   .flex-wrap {
@@ -108,6 +116,16 @@ input:focus {
 }
 .funnel-stage-circle {
   @apply w-20 h-20; /* Slightly smaller circles for mobile */
+}
+.funnel-stage {
+  display: flex;
+  flex-direction: column; /* Stack label, bar, and value vertically */
+  align-items: center; /* Center-align content */
+  text-align: center; /* Center the text */
+  gap: 8px; /* Add spacing between items */
+}
+.funnel-stage .stage-bar {
+  width: 100%; /* Full width for the bar */
 }
 }
 
