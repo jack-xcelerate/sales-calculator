@@ -56,6 +56,7 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }: {
   </div>
 );
 // Input Field Component
+// Input Field Component
 const InputField = ({ 
   label, 
   value, 
@@ -76,51 +77,74 @@ const InputField = ({
   prefix?: string;
   suffix?: string;
   tooltipContent?: string;
-}) => (
-  <div className="mb-8">
-    <div className="flex items-center space-x-2 mb-2">
-      <label className="font-alata text-white/90 text-sm font-medium block">{label}</label>
-      {tooltipContent && (
-        <Tooltip content={tooltipContent}>
-          <Info className="h-4 w-4 text-primary/50 cursor-help hover:text-primary transition-colors" />
-        </Tooltip>
-      )}
-    </div>
-    <div className="relative">
-      <input
-        type={type}
-        value={value}
-        min={min}
-        max={max}
-        onChange={onChange}
-        className={`w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
-                   focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors
-                   ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-8' : ''}`}
-      />
-      {prefix && (
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary font-medium">
-          {prefix}
-        </span>
-      )}
-      {suffix && (
-        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary font-medium">
-          {suffix}
-        </span>
-      )}
-    </div>
-    {suffix === "%" && (
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={value}
-        onChange={onChange}
-        className="range-slider w-full mt-4"
-      />
-    )}
-  </div>
-);
+}) => {
+  // Use local state to handle the input value as a string
+  const [localValue, setLocalValue] = useState(value.toString());
 
+  // Update local value when prop value changes
+  useEffect(() => {
+    setLocalValue(value.toString());
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    
+    // Update local state with the raw input
+    setLocalValue(newValue);
+    
+    // Only call parent onChange with number value if it's a valid number
+    if (newValue === '') {
+      onChange({ ...e, target: { ...e.target, value: '0' } });
+    } else {
+      // Remove leading zeros
+      const cleanValue = newValue.replace(/^0+/, '') || '0';
+      onChange({ ...e, target: { ...e.target, value: cleanValue } });
+    }
+  };
+
+  return (
+    <div className="mb-8">
+      <div className="flex items-center space-x-2 mb-2">
+        <label className="font-alata text-white/90 text-sm font-medium block">{label}</label>
+        {tooltipContent && (
+          <Tooltip content={tooltipContent}>
+            <Info className="h-4 w-4 text-primary/50 cursor-help hover:text-primary transition-colors" />
+          </Tooltip>
+        )}
+      </div>
+      <div className="relative">
+        <input
+          type="text" // Changed from "number" to "text"
+          value={localValue}
+          onChange={handleChange}
+          className={`w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
+                     focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors
+                     ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-8' : ''}`}
+        />
+        {prefix && (
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary font-medium">
+            {prefix}
+          </span>
+        )}
+        {suffix && (
+          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary font-medium">
+            {suffix}
+          </span>
+        )}
+      </div>
+      {suffix === "%" && (
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={onChange}
+          className="range-slider w-full mt-4"
+        />
+      )}
+    </div>
+  );
+};
 // Funnel Stage Component
 const FunnelStage = ({ value, exactValue, label, tooltipContent }: {
   value: number;
