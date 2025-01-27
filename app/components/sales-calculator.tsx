@@ -50,17 +50,9 @@ const initialInputState: Inputs = {
 };
 
 const App = () => {
-  const [scenarios, setScenarios] = useState<Inputs[]>([initialInputState]);
-  
-  const addScenario = () => {
-    setScenarios(prev => [...prev, { ...initialInputState }]);
-  };
-  
   return (
     <div className="min-h-screen">
-      {scenarios.map((scenario, index) => (
-        <SalesCalculator key={index} inputs={scenario} />
-      ))}
+      <SalesCalculator inputs={initialInputState} />
     </div>
   );
 };
