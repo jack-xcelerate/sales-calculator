@@ -238,7 +238,7 @@ const captureCalculator = () => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Column - Input Fields (1/3) */}
             <div className="lg:w-1/3">
-              <h4 className="text-2xl font-staatliches mb-6">Campaign Figures</h4>
+              <h4 className="text-2xl text-white mb-6">Campaign Figures</h4>
               <div className="space-y-6">
                 {inputFields.map((field) => (
                   <InputField
@@ -261,8 +261,7 @@ const captureCalculator = () => {
             <div className="lg:w-2/3 space-y-8">
               {/* Funnel Stages */}
               <div className="bg-[#00142a] border border-primary/20 rounded-xl p-6 shadow-lg">
-              <h4 className="text-2xl font-staatliches mb-6">Estimated Sales</h4>
-
+                <h4 className="text-2xl text-white font-staatliches mb-6">Marketing Funnel</h4>
                 <div className="flex flex-wrap justify-center gap-4">
                   <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="# of Clicks" tooltipContent="Total clicks from ads" />
                   <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="# of Leads" tooltipContent="Total leads generated" />
@@ -270,9 +269,9 @@ const captureCalculator = () => {
                   <FunnelStage value={metrics.salesCalls} exactValue={metrics.salesCalls} label="Qualified" tooltipContent="Leads who are qualified for your services" />
                   <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="Clients Closed" tooltipContent="New clients Won" />
                 </div>
-              </div>
-              {/* Funnel Visualization */}
+                 {/* Funnel Visualization */}
               <FunnelVisualization metrics={metrics} inputs={inputs} />
+              </div>
               {/* Metric Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <MetricCard
@@ -480,7 +479,7 @@ const inputFields = [
     key: "managementFee" as keyof Inputs, 
     prefix: "$",
     tooltipContent: "Monthly fee for managing your advertising campaigns",
-    description: "Optional: Add management fee to see total ROI including service costs" 
+    description: "Add XDS management fee to see total ROI from investment" 
   },
   { 
     label: "Landing Page Conversion Rate (%)", 
@@ -524,10 +523,7 @@ const FunnelVisualization = ({ metrics, inputs }: { metrics: Metrics; inputs: In
   const maxStageValue = Math.max(...stages.map((stage) => stage.value));
 
   return (
-    <div className="bg-[#00142a] border border-primary/20 rounded-xl p-6 shadow-lg">
-      <h3 className="text-2xl font-staatliches mb-6">
-        Marketing Funnel
-      </h3>
+    <div className="p-6">
       <div className="space-y-6">
         {stages.map((stage, index) => {
           const percentage =
@@ -584,7 +580,7 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
   };
 
   return (
-    <div className="bg-[#00142a] border border-primary/20 rounded-xl p-8 mt-16">
+    <div className="bg-[#00142a] border border-primary/20 rounded-xl p-12 mt-16">
       <div className="text-center space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-staatliches text-white">
@@ -597,25 +593,25 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="space-y-1">
-            <div className="text-3xl font-staatliches text-primary">
+            <div className="text-3xl font-staatliches text-white">
               ${Math.round(metrics.estimatedRevenue).toLocaleString()}
             </div>
             <div className="text-sm text-white/60">Monthly Revenue</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl font-staatliches text-primary">
+            <div className="text-3xl font-staatliches text-white">
               {Math.round(metrics.newClients)}
             </div>
             <div className="text-sm text-white/60">New Clients Per Month</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl font-staatliches text-primary">
+            <div className="text-3xl font-staatliches text-white">
               {metrics.roas.toFixed(1)}x
             </div>
             <div className="text-sm text-white/60">Estimated Return/ROAS</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl font-staatliches text-primary">
+            <div className="text-3xl font-staatliches text-white">
               {metrics.leadToSale.toFixed(1)}%
             </div>
             <div className="text-sm text-white/60">Lead To Deal Rate</div>
@@ -636,7 +632,8 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
             className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg font-staatliches text-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
             <span>Get Your Free 30-Min XDS Game Plan →</span>
           </button>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/60">
+          <div className="flex items-center justify-center gap-4 text-sm text-white/80 w-full">
+          <span className="flex flex-col items-center text-center">
             <span className="flex items-center">
               <span className="text-primary mr-1">✓</span> Tailored Strategy
             </span>
@@ -646,7 +643,10 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
             <span className="flex items-center">
               <span className="text-primary mr-1">✓</span> Growth Projection
             </span>
-          </div>
+          </span>
+        </div>
+
+
         </div>
       </div>
     </div>
