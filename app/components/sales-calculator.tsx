@@ -166,16 +166,16 @@ const captureCalculator = () => {
             return Array.from(sheet.cssRules)
               .filter(rule => rule instanceof CSSFontFaceRule)
               .map(rule => rule.cssText);
-          } catch (e) {
+          } catch (_) { // Changed from (e) to (_) to indicate unused parameter
             return [];
           }
         })
         .flat();
-
+    
       const style = clonedDoc.createElement('style');
       style.textContent = fontFaces.join('\n');
       clonedDoc.head.appendChild(style);
-
+    
       return clonedDoc;
     }
   }).then(canvas => {
