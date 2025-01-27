@@ -541,7 +541,7 @@ const FunnelVisualization = ({ metrics, inputs }: { metrics: Metrics; inputs: In
                   <span>{stage.icon}</span>
                   <span>{stage.label}</span>
                 </span>
-                <span className="text-sm text-primary">
+                <span className="text-sm text-white">
                   {Math.round(stage.value).toLocaleString()}
                 </span>
               </div>
