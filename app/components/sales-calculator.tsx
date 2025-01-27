@@ -195,6 +195,7 @@ const captureCalculator = () => {
   });
 };
 
+
   const shareCalculator = () => {
     const state = {
       inputs,
