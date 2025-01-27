@@ -166,7 +166,7 @@ const captureCalculator = () => {
             return Array.from(sheet.cssRules)
               .filter(rule => rule instanceof CSSFontFaceRule)
               .map(rule => rule.cssText);
-          } catch (_) { // Changed from (e) to (_) to indicate unused parameter
+          } catch {  // Remove the parameter completely
             return [];
           }
         })
@@ -178,6 +178,7 @@ const captureCalculator = () => {
     
       return clonedDoc;
     }
+    
   }).then(canvas => {
     const image = canvas.toDataURL('image/png', 1.0);
     const link = document.createElement('a');
