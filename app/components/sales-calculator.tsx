@@ -5,6 +5,8 @@ import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
 import Image from 'next/image';
 import html2canvas from 'html2canvas';
+import "../globals.css";
+
 
 // Component Types
 interface Metrics {
@@ -260,14 +262,14 @@ const captureCalculator = () => {
             {/* Right Column - Visualizations (2/3) */}
             <div className="lg:w-2/3 space-y-8">
               {/* Funnel Stages */}
-              <div className="bg-[#00142a] border border-primary/20 rounded-xl p-6 shadow-lg">
-                <h4 className="text-2xl text-white font-staatliches mb-6">Marketing Funnel</h4>
+              <div className="bg-[#00142a] border border-primary rounded-xl p-6 shadow-lg">
+                <h4 className="text-2xl text-white mb-6">Marketing Funnel</h4>
                 <div className="flex flex-wrap justify-center gap-4">
                   <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="# of Clicks" tooltipContent="Total clicks from ads" />
                   <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="# of Leads" tooltipContent="Total leads generated" />
-                  <FunnelStage value={metrics.discoveryCalls} exactValue={metrics.discoveryCalls} label="Show up/Contacted" tooltipContent="Leads successfully contacted or who showed up" />
-                  <FunnelStage value={metrics.salesCalls} exactValue={metrics.salesCalls} label="Qualified" tooltipContent="Leads who are qualified for your services" />
-                  <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="Clients Closed" tooltipContent="New clients Won" />
+                  <FunnelStage value={metrics.discoveryCalls} exactValue={metrics.discoveryCalls} label="Leads Shown Up/Contacted" tooltipContent="Leads successfully contacted or who showed up" />
+                  <FunnelStage value={metrics.salesCalls} exactValue={metrics.salesCalls} label="Qualified Leads" tooltipContent="Leads who are qualified for your services" />
+                  <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="Clients Won" tooltipContent="New Clients Won" />
                 </div>
                  {/* Funnel Visualization */}
               <FunnelVisualization metrics={metrics} inputs={inputs} />
@@ -275,7 +277,7 @@ const captureCalculator = () => {
               {/* Metric Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <MetricCard
-                label="Leads To Deal Rate"
+                label="Leads To Client Rate"
                 value={`${((metrics.newClients / metrics.leads) * 100).toFixed(1)}%`}
                 subtitle={`${Math.round(metrics.newClients)} clients from ${Math.round(metrics.leads)} leads`}
                 tooltipContent="Percentage of total leads that convert into paying clients"
@@ -293,7 +295,7 @@ const captureCalculator = () => {
                   tooltipContent="Return on total investment including ad spend and management fees"
                 />
                 <MetricCard
-                  label="Current Cost Per Acquisition"
+                  label="Cost Per Acquisition"
                   value={metrics.newClients > 0 ? `$${((inputs.monthlyMarketingBudget + inputs.managementFee) / metrics.newClients).toFixed(2)}` : '$0.00'}
                   subtitle={`Based on ${Math.round(metrics.newClients)} new clients and $${(inputs.monthlyMarketingBudget + inputs.managementFee).toFixed(2)} total spend`}
                   tooltipContent="Your actual cost to acquire one new client based on current performance"
@@ -301,7 +303,7 @@ const captureCalculator = () => {
                 <MetricCard
                   label="Max Cost to Win a Client"
                   value={`$${inputs.clientSpend.toFixed(2)}`}
-                  subtitle={`Industry benchmark: Your cost to win a client should be no more than ⅓ of their total value ($${(inputs.avgCustomerValue).toFixed(2)})`}                
+                  subtitle={`Your cost to win a client should be no more than ⅓ of their total value ($${(inputs.avgCustomerValue).toFixed(2)})`}                
                   tooltipContent="Maximum amount you're willing to spend to acquire one new client"
                 />
               </div>
@@ -324,7 +326,7 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }: {
   subtitle?: string;
   tooltipContent: string;
 }) => (
-  <div className="bg-[#00142a] border border-primary/20 rounded-xl rounded-lg p-6 hover:border-primary/40 transition-colors shadow-lg">
+  <div className="bg-[#00142a] border border-primary rounded-xl rounded-lg p-6 hover:border-white transition-colors shadow-lg">
     <div className="flex items-center space-x-2 mb-4">
       <span className="text-primary text-sm font-staatliches">{label}</span>
       <Tooltip content={tooltipContent}>
@@ -381,7 +383,7 @@ const InputField = ({
   return (
     <div className="mb-6">
       <div className="flex items-center space-x-2 mb-2">
-        <label className="font-alata text-white/90 text-sm font-medium block">{label}</label>
+        <label className="font-alata text-white text-sm font-medium block">{label}</label>
         {tooltipContent && (
           <Tooltip content={tooltipContent}>
             <Info className="h-4 w-4 text-primary/50 cursor-help hover:text-primary transition-colors" />
@@ -436,14 +438,14 @@ const FunnelStage = ({ value, exactValue, label, tooltipContent }: {
 }) => (
   <div className="flex flex-col items-center p-4">
     <Tooltip content={tooltipContent}>
-      <div className="w-24 h-24 rounded-full bg-background/50 border-2 border-primary/30 flex flex-col items-center justify-center hover:border-primary transition-colors">
+      <div className="w-24 h-24 rounded-full bg-background/50 border-2 border-primary flex flex-col items-center justify-center hover:border-white transition-colors">
         <div className="text-xl font-staatliches text-white">{Math.round(value).toLocaleString()}</div>
         {exactValue && Math.round(exactValue) !== exactValue && (
           <div className="text-xs text-primary">({exactValue.toFixed(1)})</div>
         )}
       </div>
     </Tooltip>
-    <div className="mt-4 text-sm font-alata text-white/70 text-center">{label}</div>
+    <div className="mt-4 text-sm font-alata text-white text-center">{label}</div>
   </div>
 );
 
@@ -451,7 +453,7 @@ const FunnelStage = ({ value, exactValue, label, tooltipContent }: {
 const SectionHeader = ({ title }: { title: string }) => (
   <div className="mb-8">
     <h2 className="text-3xl font-staatliches text-white mb-4">{title}</h2>
-    <div className="h-px bg-primary/20" />
+    <div className="h-px bg-primary/80" />
   </div>
 );
 
@@ -517,7 +519,7 @@ const FunnelVisualization = ({ metrics, inputs }: { metrics: Metrics; inputs: In
     { label: "Leads", value: metrics.leads, icon: "👤" },
     { label: "Show up/Contacted Leads", value: metrics.discoveryCalls, icon: "📞" },
     { label: "Qualified Leads", value: metrics.salesCalls, icon: "🗣️" },
-    { label: "New Clients", value: metrics.newClients, icon: "✅" },
+    { label: "Clients Won", value: metrics.newClients, icon: "✅" },
   ];
 
   const maxStageValue = Math.max(...stages.map((stage) => stage.value));
@@ -529,7 +531,7 @@ const FunnelVisualization = ({ metrics, inputs }: { metrics: Metrics; inputs: In
           const percentage =
             index === 0
               ? null
-              : ((stage.value / stages[index - 1].value) * 100).toFixed(1);
+              : ((stage.value / stages[index - 1].value) * 100);
 
 
           return (
@@ -576,11 +578,11 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
       leadsNeeded: Math.round(metrics.estLeads)
     };
     localStorage.setItem('calculatorResults', JSON.stringify(resultsToSave));
-    window.location.href = 'https://xceleratedigitalsystems.com/xds-game-plan';
+    window.location.href = 'https://xceleratedigitalsystems.com.au/xds-game-plan';
   };
 
   return (
-    <div className="bg-[#00142a] border border-primary/20 rounded-xl p-12 mt-16">
+    <div className="bg-[#00142a] border border-primary rounded-xl p-12 mt-16">
       <div className="text-center space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-staatliches text-white">
@@ -606,7 +608,7 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
           </div>
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-white">
-              {metrics.roas.toFixed(1)}x
+              {metrics.roas.toFixed(2)}x
             </div>
             <div className="text-sm text-white/60">Estimated Return/ROAS</div>
           </div>

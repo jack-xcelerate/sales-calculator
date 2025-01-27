@@ -14,7 +14,7 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => (
         {children}
       </TooltipPrimitive.Trigger>
       <TooltipPrimitive.Content
-        className="px-3 py-1.5 text-sm bg-background/90 text-white rounded-lg shadow-lg border border-primary/20"
+        className="px-3 py-3 z-50 text-sm bg-white text-[#00142a] rounded-lg shadow-lg border border-primary"
         sideOffset={5}
       >
         {content}
