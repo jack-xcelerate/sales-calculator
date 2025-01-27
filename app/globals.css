@@ -7,7 +7,8 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: #00142a;
+  background: rgb(0,20,42);
+  background: linear-gradient(90deg, rgba(0,20,42,1) 0%, rgba(0,20,42,1) 52%, rgba(8,78,142,1) 100%);
   color: white;
   font-family: theme('fontFamily.alata');
 }
@@ -94,8 +95,8 @@ input:focus {
 
 .funnel-container {
   display: flex;
-  flex-direction: column; /* Stack items vertically for mobile */
-  gap: 16px; /* Add spacing between stages */
+  flex-direction: column; 
+  gap: 16px;
 }
 
 
@@ -114,9 +115,11 @@ input:focus {
 .funnel-stage-circle {
   margin: 0 auto; /* Center the circle */
 }
+
 .funnel-stage-circle {
   @apply w-20 h-20; /* Slightly smaller circles for mobile */
 }
+
 .funnel-stage {
   display: flex;
   flex-direction: column; /* Stack label, bar, and value vertically */
@@ -128,7 +131,6 @@ input:focus {
   width: 100%; /* Full width for the bar */
 }
 }
-
 
 /* Component Styles */
 .metric-card {
