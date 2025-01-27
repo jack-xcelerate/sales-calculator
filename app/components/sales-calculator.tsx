@@ -289,7 +289,7 @@ const captureCalculator = () => {
                 <MetricCard
                   label="Return on Investment (ROI)"
                   value={`${metrics.roas.toFixed(2)}x`}
-                  subtitle={`For every $1 spent ($${inputs.monthlyMarketingBudget + inputs.managementFee} total) you get $${metrics.roas.toFixed(2)} back`}
+                  subtitle={`For every $1 spent you get $${metrics.roas.toFixed(2)} back`}
                   tooltipContent="Return on total investment including ad spend and management fees"
                 />
                 <MetricCard
