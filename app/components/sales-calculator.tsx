@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Tooltip } from './ui/tooltip';
 import { Info } from 'lucide-react';
 import Image from 'next/image';
-import html2canvas from 'html2canvas';
 import "../globals.css";
 
 // Component Types
