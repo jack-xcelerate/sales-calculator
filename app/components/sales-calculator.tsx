@@ -149,7 +149,7 @@ useEffect(() => {
 }, []);
 
 // Conversion Impact Analysis Components
-const ConversionImpactTable = ({ baseMetrics, inputs }: { baseMetrics: Metrics; inputs: Inputs }) => {
+const ConversionImpactTable = ({ inputs }: { inputs: Inputs }) => {
   const conversionRates = [1, 2, 4, 8, 16]; // Percentages
   
   const calculateMetrics = (conversionRate: number) => {
@@ -330,7 +330,7 @@ const ConversionImpactTable = ({ baseMetrics, inputs }: { baseMetrics: Metrics; 
             {/* New Conversion Impact Analysis Section */}
             <div className="mt-12">
               <h3 className="text-2xl font-staatliches text-white mb-4">Conversion Rate Impact Analysis</h3>
-              <ConversionImpactTable baseMetrics={metrics} inputs={inputs} />
+                <ConversionImpactTable inputs={inputs} />
             </div>
         
           {/* CTA Section */}
