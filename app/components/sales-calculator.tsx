@@ -7,7 +7,6 @@ import Image from 'next/image';
 import html2canvas from 'html2canvas';
 import "../globals.css";
 
-
 // Component Types
 interface Metrics {
   clicks: number;
@@ -150,44 +149,65 @@ useEffect(() => {
   }
 }, []);
 
-const captureCalculator = () => {
-  html2canvas(document.body, {
-    scale: 2,
-    logging: true,
-    removeContainer: true,
-    allowTaint: true,
-    foreignObjectRendering: true,
-    width: document.documentElement.scrollWidth,
-    height: document.documentElement.scrollHeight,
-    onclone: (clonedDoc) => {
-      // This ensures fonts are loaded before capture
-      const styleSheets = Array.from(document.styleSheets);
-      const fontFaces = styleSheets
-        .map(sheet => {
-          try {
-            return Array.from(sheet.cssRules)
-              .filter(rule => rule instanceof CSSFontFaceRule)
-              .map(rule => rule.cssText);
-          } catch {  // Remove the parameter completely
-            return [];
-          }
-        })
-        .flat();
+// Conversion Impact Analysis Components
+const ConversionImpactTable = ({ baseMetrics, inputs }: { baseMetrics: Metrics; inputs: Inputs }) => {
+  const conversionRates = [1, 2, 4, 8, 16]; // Percentages
+  
+  const calculateMetrics = (conversionRate: number) => {
+    const clicks = inputs.monthlyMarketingBudget / inputs.costPerClick;
+    const leads = clicks * (conversionRate / 100);
+    const discoveryCalls = leads * (inputs.discoveryCallRate / 100);
+    const salesCalls = discoveryCalls * (inputs.salesCallRate / 100);
+    const newClients = salesCalls * (inputs.clientWonRate / 100);
+    const revenue = newClients * inputs.avgCustomerValue;
+    const leadToClientRate = (newClients / leads) * 100;
     
-      const style = clonedDoc.createElement('style');
-      style.textContent = fontFaces.join('\n');
-      clonedDoc.head.appendChild(style);
-    
-      return clonedDoc;
-    }
-    
-  }).then(canvas => {
-    const image = canvas.toDataURL('image/png', 1.0);
-    const link = document.createElement('a');
-    link.download = 'xds-calculator-results.png';
-    link.href = image;
-    link.click();
-  });
+    return {
+      clicks: Math.round(clicks),
+      leads: Math.round(leads),
+      newClients: Math.round(newClients),
+      revenue: revenue,
+      avgClientValue: inputs.avgCustomerValue,
+      leadToClientRate: leadToClientRate
+    };
+  };
+
+  return (
+    <div className="bg-[#00142a] border border-white rounded-xl p-6">
+      <h4 className="text-2xl font-staatliches text-white mb-6">Impact of A Strong Offer</h4>
+      <div className="overflow-x-auto">
+        <table className="w-full text-white">
+          <thead>
+            <tr className="border-b border-primary/20">
+              <th className="text-left p-3">Traffic</th>
+              <th className="text-left p-3">Landing Page % Rate</th>
+              <th className="text-left p-3">Leads</th>
+              <th className="text-left p-3">Avg Client Value</th>
+              <th className="text-left p-3">Close Rate</th>
+              <th className="text-left p-3">Sales #</th>
+              <th className="text-left p-3">Revenue $</th>
+            </tr>
+          </thead>
+          <tbody>
+            {conversionRates.map((rate) => {
+              const metrics = calculateMetrics(rate);
+              return (
+                <tr key={rate} className="border-b border-primary/20 hover:bg-primary/5">
+                  <td className="p-3">{metrics.clicks.toLocaleString()}</td>
+                  <td className="p-3">{rate}%</td>
+                  <td className="p-3">{metrics.leads}</td>
+                  <td className="p-3">${metrics.avgClientValue.toLocaleString()}</td>
+                  <td className="p-3">{metrics.leadToClientRate.toFixed(1)}%</td>
+                  <td className="p-3">{metrics.newClients}</td>
+                  <td className="p-3">${metrics.revenue.toLocaleString()}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 
@@ -217,13 +237,6 @@ const captureCalculator = () => {
     priority
   />
   <div className="flex gap-4">
-    <button 
-      onClick={captureCalculator}
-      className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-staatliches 
-                text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2"
-    >
-      📸 Save as Image
-    </button>
     <button 
       onClick={shareCalculator}
       className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-staatliches 
@@ -262,7 +275,7 @@ const captureCalculator = () => {
             {/* Right Column - Visualizations (2/3) */}
             <div className="lg:w-2/3 space-y-8">
               {/* Funnel Stages */}
-              <div className="bg-[#00142a] border border-primary rounded-xl p-6 shadow-lg">
+              <div className="bg-[#00142a] border border-white rounded-xl p-6 shadow-lg">
                 <h4 className="text-2xl text-white mb-6">Marketing Funnel</h4>
                 <div className="flex flex-wrap justify-center gap-4">
                   <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="# of Clicks" tooltipContent="Total clicks from ads" />
@@ -295,13 +308,19 @@ const captureCalculator = () => {
                   tooltipContent="Return on total investment including ad spend and management fees"
                 />
                 <MetricCard
-                  label="Cost Per Acquisition"
+                  label="Cost Per Lead (CPL)"
+                  value={metrics.leads > 0 ? `$${((inputs.monthlyMarketingBudget + inputs.managementFee) / metrics.leads).toFixed(2)}` : '$0.00'}
+                  subtitle={`Based on ${Math.round(metrics.leads)} leads and $${(inputs.monthlyMarketingBudget + inputs.managementFee).toFixed(2)} total spend`}
+                  tooltipContent="Your actual cost to acquire one lead based on current performance"
+                />
+                <MetricCard
+                  label="Cost Per Acquisition (CPA)"
                   value={metrics.newClients > 0 ? `$${((inputs.monthlyMarketingBudget + inputs.managementFee) / metrics.newClients).toFixed(2)}` : '$0.00'}
                   subtitle={`Based on ${Math.round(metrics.newClients)} new clients and $${(inputs.monthlyMarketingBudget + inputs.managementFee).toFixed(2)} total spend`}
                   tooltipContent="Your actual cost to acquire one new client based on current performance"
                 />
                 <MetricCard
-                  label="Max Cost to Win a Client"
+                  label="Breakeven Cost Win a Client"
                   value={`$${inputs.clientSpend.toFixed(2)}`}
                   subtitle={`Your cost to win a client should be no more than ⅓ of their total value ($${(inputs.avgCustomerValue).toFixed(2)})`}                
                   tooltipContent="Maximum amount you're willing to spend to acquire one new client"
@@ -309,7 +328,11 @@ const captureCalculator = () => {
               </div>
             </div>
           </div>
-
+            {/* New Conversion Impact Analysis Section */}
+            <div className="mt-12">
+              <h3 className="text-2xl font-staatliches text-white mb-4">Conversion Rate Impact Analysis</h3>
+              <ConversionImpactTable baseMetrics={metrics} inputs={inputs} />
+            </div>
         
           {/* CTA Section */}
           <CTASection metrics={metrics} />
@@ -326,7 +349,7 @@ const MetricCard = ({ label, value, subtitle, tooltipContent }: {
   subtitle?: string;
   tooltipContent: string;
 }) => (
-  <div className="bg-[#00142a] border border-primary rounded-xl rounded-lg p-6 hover:border-white transition-colors shadow-lg">
+  <div className="bg-[#00142a] border border-white rounded-xl rounded-lg p-6 hover:border-white transition-colors shadow-lg">
     <div className="flex items-center space-x-2 mb-4">
       <span className="text-primary text-sm font-staatliches">{label}</span>
       <Tooltip content={tooltipContent}>
@@ -395,7 +418,7 @@ const InputField = ({
           type="text"
           value={localValue}
           onChange={handleChange}
-          className={`w-full px-4 py-3 bg-background/50 border border-primary/30 rounded-lg text-white 
+          className={`w-full px-4 py-3 bg-background/50 border border-white/30 rounded-lg text-white 
                      focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors
                      ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-8' : ''}`}
         />
@@ -582,7 +605,7 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
   };
 
   return (
-    <div className="bg-[#00142a] border border-primary rounded-xl p-12 mt-16">
+    <div className="bg-[#00142a] border border-white rounded-xl p-16 mt-16">
       <div className="text-center space-y-8">
         <div className="space-y-2">
           <h3 className="text-3xl font-staatliches text-white">
