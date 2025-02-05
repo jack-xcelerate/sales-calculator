@@ -727,6 +727,9 @@ const CTASection = ({ metrics }: { metrics: Metrics }) => {
           <div className="space-y-1">
             <div className="text-3xl font-staatliches text-white">
               {formatNumber(metrics.newClients)}
+              {Math.round(metrics.newClients) !== metrics.newClients && (
+                <span className="text-lg text-primary ml-2">({metrics.newClients.toFixed(1)})</span>
+              )}
             </div>
             <div className="text-sm text-white/60">New Clients Per Month</div>
           </div>
