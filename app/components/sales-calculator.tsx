@@ -43,8 +43,8 @@ interface ValidationError {
 // Initial States
 const initialInputState: Inputs = {
   avgCustomerValue: 3000,
-  monthlyMarketingBudget: 3000,
-  costPerClick: 4,
+  monthlyMarketingBudget: 2000,
+  costPerClick: 3,
   managementFee: 0,
   landingPageConversion: 5,
   discoveryCallRate: 50,
@@ -203,7 +203,7 @@ const MetricCard = ({
 }) => (
   <div className="bg-[#00142a] border border-white rounded-xl rounded-lg p-6 hover:border-white transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl">
     <div className="flex items-center space-x-2 mb-4">
-      <span className="text-primary text-white text-sm font-staatliches">{label}</span>
+      <span className="text-primary text-white text-1xl font-staatliches">{label}</span>
       <Tooltip content={tooltipContent}>
         <Info className="h-4 w-4 text-white/50 cursor-help hover:text-primary transition-colors" />
       </Tooltip>
@@ -211,7 +211,7 @@ const MetricCard = ({
     <div className="text-4xl font-staatliches text-white mb-2">
       {typeof value === 'string' ? value : formatNumber(Number(value))}
     </div>
-    {subtitle && <div className="text-sm font-alata text-white/60">{subtitle}</div>}
+    {subtitle && <div className="text-sm font-montserrat text-white/60">{subtitle}</div>}
   </div>
 );
 
@@ -267,7 +267,7 @@ const InputField = ({
   return (
     <div className="mb-6">
       <div className="flex items-center space-x-2 mb-2">
-        <label className="font-alata text-white text-sm font-medium block">{label}</label>
+        <label className="font-montserrat text-white text-sm font-medium block">{label}</label>
         {tooltipContent && (
           <Tooltip content={tooltipContent}>
             <Info className="h-4 w-4 text-white/50 cursor-help hover:text-primary transition-colors" />
@@ -339,13 +339,13 @@ const FunnelStage = ({
         )}
       </div>
     </Tooltip>
-    <div className="mt-4 text-sm font-alata text-white text-center">{label}</div>
+    <div className="mt-4 text-sm font-montserrat text-white text-center">{label}</div>
   </div>
 );
 
 const SectionHeader = ({ title }: { title: string }) => (
   <div className="mb-8 mt-8">
-    <h2 className="text-3xl font-staatliches text-white mb-4">{title}</h2>
+    <h2 className="text-4xl font-staatliches text-white mb-4">{title}</h2>
     <div className="h-px bg-primary/80" />
   </div>
 );
@@ -525,18 +525,18 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-staatliches 
                       text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2"
           >
-            🔗 Share Calculator
+            🔗 Share
           </button>
         </div>
       </div>
 
-      <SectionHeader title="Xcelerate Growth Engine" />
+      <SectionHeader title="Xcelerate Growth Engine Calculator" />
       
       <div className="max-w-8xl mx-auto">
         <div id="report">
           {/* Ad Spend Configuration Section */}
           <div className="bg-[#00142a] border border-white rounded-xl p-6 shadow-lg mb-8">
-            <h4 className="text-2xl text-white mb-6">Lead Generation Pipeline - Step 1: Fuel</h4>
+            <h4 className="text-2xl text-white mb-6">Step 1: Fuel - Lead Generation Pipeline</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {adSpendFields.map((field) => (
                 <InputField
@@ -556,7 +556,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Column - Conversion Rates */}
             <div className="lg:w-1/3 bg-[#00142a] border border-white rounded-xl p-6 shadow-lg mb-8">
-              <h4 className="text-2xl text-white mb-6">Sales Pipeline - Step 2: Ignition</h4>
+              <h4 className="text-2xl text-white mb-6">Step 2: Ignition - Sales Pipeline</h4>
               <div className="space-y-6">
                 {conversionFields.map((field) => (
                   <InputField
@@ -578,20 +578,20 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
             <div className="lg:w-2/3">
               {/* Funnel Stages */}
               <div className="bg-[#00142a] border border-white rounded-xl p-6 shadow-lg mb-8">
-                <h4 className="text-2xl text-white mb-6">The Client Journey</h4>
+                <h4 className="text-3xl text-white mb-6">Your Client Journey</h4>
                 <div className="flex flex-wrap justify-center gap-4 mb-8">
-                  <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="# of Clicks" tooltipContent="Total clicks from ads" />
-                  <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="# of Leads" tooltipContent="Total leads generated" />
-                  <FunnelStage value={metrics.discoveryCalls} exactValue={metrics.discoveryCalls} label="Leads Shown Up/Contacted" tooltipContent="Leads successfully contacted or who showed up" />
-                  <FunnelStage value={metrics.salesCalls} exactValue={metrics.salesCalls} label="Qualified Leads" tooltipContent="Leads who are qualified for your services" />
-                  <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="Clients Won" tooltipContent="New Clients Won" />
+                  <FunnelStage value={metrics.clicks} exactValue={metrics.clicks} label="# of Clicks on ads" tooltipContent="The total amount of clicks on from ads to your landing page" />
+                  <FunnelStage value={metrics.leads} exactValue={metrics.leads} label="# of Leads" tooltipContent="The total amount of leads generated from your landing page" />
+                  <FunnelStage value={metrics.discoveryCalls} exactValue={metrics.discoveryCalls} label="Leads Shown Up/Contacted" tooltipContent="The total amount of leads successfully contacted or who showed up to their first call" />
+                  <FunnelStage value={metrics.salesCalls} exactValue={metrics.salesCalls} label="Qualified Leads" tooltipContent="The total amount of leads who are qualified for your services" />
+                  <FunnelStage value={metrics.newClients} exactValue={metrics.newClients} label="Clients Won" tooltipContent="The total amount of new clients/deals you have won" />
                 </div>
                 <FunnelVisualization metrics={metrics} inputs={inputs} />
               </div>
 
               {/* Revenue Fields below funnel */}
               <div className="bg-[#00142a] border border-white rounded-xl p-6 mb-10">
-                <h4 className="text-2xl text-white mb-6">Revenue Configuration</h4>
+                <h4 className="text-2xl text-white mb-6">Revenue & Investment</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {revenueFields.map((field) => (
                     <InputField
@@ -618,19 +618,19 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
               label="Cost Per Lead (CPL)"
               value={metrics.leads > 0 ? formatCurrency((inputs.monthlyMarketingBudget + inputs.managementFee) / metrics.leads, 2) : '$0.00'}
               subtitle={`Based on ${Math.round(metrics.leads)} leads and ${formatCurrency(inputs.monthlyMarketingBudget + inputs.managementFee)} total spend`}
-              tooltipContent="Your actual cost to acquire one lead based on current performance"
+              tooltipContent="Your cost to acquire one lead based on current performance"
             />
             <MetricCard
               label="Cost Per Client (CPA)"
               value={metrics.newClients > 0 ? formatCurrency((inputs.monthlyMarketingBudget + inputs.managementFee) / metrics.newClients, 2) : '$0.00'}
               subtitle={`Based on ${Math.round(metrics.newClients)} new clients and ${formatCurrency(inputs.monthlyMarketingBudget + inputs.managementFee)} total spend`}
-              tooltipContent="Your actual cost to acquire one new client based on current performance"
+              tooltipContent="Your cost to acquire one new client based on current performance"
             />
             <MetricCard
               label="Breakeven Cost Win a Client"
               value={formatCurrency(inputs.clientSpend, 2)}
               subtitle={`Your cost to win a client should be no more than ⅓ of their total value (${formatCurrency(inputs.avgCustomerValue)})`}
-              tooltipContent="Maximum amount you're willing to spend to acquire one new client"
+              tooltipContent="Maximum amount you should be willing to spend to acquire one new client"
             />
             <MetricCard
               label="Leads To Client Rate"
@@ -705,7 +705,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
           <div className="bg-[#00142a] border border-white rounded-xl p-16 mt-16">
             <div className="text-center space-y-8">
               <div className="space-y-2">
-                <h3 className="text-3xl font-staatliches text-white">
+                <h3 className="text-4xl font-staatliches text-white">
                   Your Current Growth Potential
                 </h3>
                 <p className="text-white/80">
@@ -713,7 +713,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <div className="space-y-1">
                   <div className="text-3xl font-staatliches text-white">
                     {formatCurrency(metrics.estimatedRevenue)}
@@ -735,20 +735,14 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                   </div>
                   <div className="text-sm text-white/60">Estimated Return/ROAS</div>
                 </div>
-                <div className="space-y-1">
-                  <div className="text-3xl font-staatliches text-white">
-                    {formatNumber(metrics.leadToSale, 1)}%
-                  </div>
-                  <div className="text-sm text-white/60">Lead To Deal Rate</div>
-                </div>
+                
               </div>
 
               <div>
-                <p className="text-white/80">
-                  Unlock predictable growth for your business! Even a 2% improvement in your conversion rates can significantly 
-                  increase your revenue—all without spending more on marketing. Book a time with us and see how small changes 
-                  can drive consistent, measurable results.
-                </p>
+                <p className="text-white text-2xl m-2">🚀 Unlock Predictable Growth—Without Spending More on Ads!</p>
+                <p className="text-white text-1xl m-2">Even a tiny 2% boost in your conversion rates can unlock massive revenue gains—All without dropping another cent on ads.</p>
+                <p className="text-white text-1xl m-2">Let us map out exactly how to optimise your funnel, plug the leaks, and turn more leads into paying clients.</p>
+                <p className="text-2xl font-staatliches text-white mt-12">Book your free XDS Game Plan and see how small tweaks can drive big results</p>
               </div>
 
               <div className="space-y-4">
@@ -761,23 +755,21 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                       leadsNeeded: Math.round(metrics.estLeads)
                     };
                     localStorage.setItem('calculatorResults', JSON.stringify(resultsToSave));
-                    window.location.href = 'https://xceleratedigitalsystems.com.au/xds-game-plan';
+                    window.location.href = 'https://xceleratedigitalsystems.com.au/discovery-session';
                   }}
                   className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg font-staatliches 
                             text-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
-                  <span>Get Your Free 45-min XDS Game Plan→</span>
+                  <span>Get Your Free 30-min XDS Game Plan→</span>
                 </button>
-                <div className="flex items-center justify-center gap-4 text-sm text-white/80 w-full">
+                <div className="flex items-center justify-center gap-4 text-sm text-white w-full">
                   <span className="flex flex-col items-center text-center">
                     <span className="flex items-center">
-                      <span className="text-primary mr-1">✓</span> Tailored Strategy
-                    </span>
+                      <span className="text-primary mr-1 mt-2">✓</span>Attract More Qualified Leads</span>
                     <span className="flex items-center">
-                      <span className="text-primary mr-1">✓</span> Implementation Timeline
-                    </span>
+                      <span className="text-primary mr-1 mt-2">✓</span>Convert Them To Clients Like Crazy</span>
                     <span className="flex items-center">
-                      <span className="text-primary mr-1">✓</span> Growth Projection
+                      <span className="text-primary mr-1 mt-2">✓</span>Scale Your Business Without Blowing Money on Broken Marketing
                     </span>
                   </span>
                 </div>

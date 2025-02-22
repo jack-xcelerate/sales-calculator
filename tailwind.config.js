@@ -52,7 +52,7 @@ module.exports = {
       },
       fontFamily: {
         staatliches: ['var(--font-staatliches)', ...fontFamily.sans],
-        alata: ['var(--font-alata)', ...fontFamily.sans],
+        montserrat: ['var(--font-montserrat)', ...fontFamily.sans],
       },
       borderRadius: {
         lg: "var(--radius)",

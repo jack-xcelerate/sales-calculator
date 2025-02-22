@@ -7,10 +7,14 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background: rgb(0,20,42);
-  background: linear-gradient(90deg, rgba(0,20,42,1) 0%, rgba(0,20,42,1) 52%, rgba(8,78,142,1) 100%);
+  background-color: #00142a;
+  opacity: 1;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), 
+                    linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, #00142a 1px);
+  background-size: 20px 20px;
+
   color: white;
-  font-family: theme('fontFamily.alata');
+  font-family: theme('fontFamily.montserrat');
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -165,7 +169,7 @@ input:focus {
 
 /* Input Styles */
 .input-label {
-  @apply font-alata text-sm text-white/90;
+  @apply font-montserrat text-sm text-white/90;
 }
 
 .input-field {
