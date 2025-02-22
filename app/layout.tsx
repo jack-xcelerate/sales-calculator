@@ -17,6 +17,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Xcelerate Growth Engine Calculator",
   description: "Discover how to generate more leads & clients without spending another $ on ads.",
+  icons: {
+    icon: '/favicon.png',
+  }
 };
 
 export default function RootLayout({
