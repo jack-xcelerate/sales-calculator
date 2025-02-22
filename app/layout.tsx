@@ -15,8 +15,8 @@ const alata = Alata({
 });
 
 export const metadata: Metadata = {
-  title: "Sales Calculator",
-  description: "Sales funnel calculator and metrics",
+  title: "Xcelerate Conversion Calculator",
+  description: "Discover how to generate more leads & clients without spending another $ on ads.",
 };
 
 export default function RootLayout({
