@@ -766,7 +766,7 @@ const SalesCalculator = ({ inputs: initialInputs }: { inputs: Inputs }) => {
                   className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-lg font-staatliches 
                             text-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
-                  <span>Get Your Free 30-Min XGE Game Plan→</span>
+                  <span>Get Your Free 45-min XDS Game Plan→</span>
                 </button>
                 <div className="flex items-center justify-center gap-4 text-sm text-white/80 w-full">
                   <span className="flex flex-col items-center text-center">
